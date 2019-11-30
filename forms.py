@@ -4,8 +4,9 @@ import django_jsonforms
 from django import forms
 from django.forms import ModelForm, Form
 from django_jsonforms.forms import JSONSchemaField
+from django.contrib.postgres.fields import JSONField
 
-from .models import Post2, Community
+from .models import Post2, Community, DataType, DataTypeObject, Field
 
 class PostForm(forms.ModelForm):
 
@@ -18,6 +19,13 @@ class CommunityForm(forms.ModelForm):
     class Meta:
         model = Community
         fields = ('name', 'summary', 'image')
+
+class DataTypeForm(forms.ModelForm):
+
+    class Meta:
+        model = DataType
+        fields = ('name', 'community', 'extra_fields')
+
 
 
 class CustomForm(forms.Form):
@@ -38,6 +46,7 @@ class CustomForm(forms.Form):
         "properties": {
             "Data Type Type": {
                 "type": "string",
+                "enum": ["Sting", "Boolean", "Integer"],
                 "maxLength": 30,
             }
         }
@@ -49,8 +58,29 @@ class CustomForm(forms.Form):
         "properties": {
             "Is Required?": {
                 "type": "boolean",
+            }
+        }
+    }
+
+    data_type_schema = {
+        "$id": "https://example.com/person.schema.json",
+        "$schema": "http://json-schema.org/draft-07/schema#",
+        "title": "Community",
+        "type": "object",
+        "properties": {
+            "Data Field Name": {
+                "type": "string",
+            },
+            "Data Field Type": {
+                "type": "string",
+                "enum": ["String", "Integer", "Boolean", "Image"]
+            },
+            "is required": {
+                "type": "string",
+                "enum": ["True", "False"]
 
             }
+
         }
     }
 
@@ -62,54 +92,47 @@ class CustomForm(forms.Form):
         "disable_edit_json": False,
         "disable_properties": False,
 }
+    data_type = JSONSchemaField(schema=data_type_schema, options=options)
+    #data_type_name = JSONSchemaField(schema = data_type_name, options = options)
+    #data_type_type = JSONSchemaField(schema=data_type_type, options=options)
+    #is_required = JSONSchemaField(schema=is_required, options=options)
 
-    data_type_name = JSONSchemaField(schema = data_type_name, options = options)
-    data_type_type = JSONSchemaField(schema=data_type_type, options=options)
-    is_required = JSONSchemaField(schema=is_required, options=options)
+
 
 #TODO: Create dynamic field
 #######create dynamic field#######
-    class FieldHandler():
-        formfields = {}
 
-        def __init__(self, fields):
-            for field in fields:
-                options = self.get_options(field)
-                f = getattr(self, "create_field_for_" + field['type'])(field, options)
-                self.formfields[field['name']] = f
+class DataTypeForm2(forms.ModelForm):
 
-        def get_options(self, field):
-            options = {}
-            options['label'] = field['label']
-            options['help_text'] = field.get("help_text", None)
-            options['required'] = bool(field.get("required", 0))
-            return options
+    class Meta:
+        model = DataType
+        fields = ('name', 'extra_fields')
 
-        def create_field_for_text(self, field, options):
-            options['max_length'] = int(field.get("max_length", "20"))
-            return django.forms.CharField(**options)
+class FieldForm(forms.ModelForm):
 
-        def create_field_for_textarea(self, field, options):
-            options['max_length'] = int(field.get("max_value", "9999"))
-            return django.forms.CharField(widget=django.forms.Textarea, **options)
+    #fi = {'name':'bengi', 'field_type':'string'}
 
-        def create_field_for_integer(self, field, options):
-            options['max_value'] = int(field.get("max_value", "999999999"))
-            options['min_value'] = int(field.get("min_value", "-999999999"))
-            return django.forms.IntegerField(**options)
+    class Meta:
+        model = Field
+        fields = ('name', 'field_type', 'required', 'community', 'data_type')
+    #name = forms.CharField(required=True)
+    #field_type = forms.ChoiceField(widget=forms.RadioSelect, choices=('String', 'Integer'), required=True)
+    #required = forms.BooleanField(required=True)
+    #community = forms.CharField(required=True)
+    #data_type = forms.CharField(required=True)
 
-        def create_field_for_radio(self, field, options):
-            options['choices'] = [(c['value'], c['name']) for c in field['choices']]
-            return django.forms.ChoiceField(widget=django.forms.RadioSelect, **options)
+    #def save(self):
+        #Field = self.instance
+        #Field.name = self.cleaned_data['name']
+        #Field.field_type = self.cleaned_data['field_type']
+        #Field.required = self.cleaned_data['required']
+        #Field.community = self.cleaned_data['community']
+        #Field.data_type = self.cleaned_data['data_type']
 
-        def create_field_for_select(self, field, options):
-            options['choices'] = [(c['value'], c['name']) for c in field['choices']]
-            return django.forms.ChoiceField(**options)
 
-        def create_field_for_checkbox(self, field, options):
-            return django.forms.BooleanField(widget=django.forms.CheckboxInput, **options)
 
-        def get_form(jstr):
-            fields = json.loads(jstr)
-            fh = FieldHandler(fields)
-            return type('DynaForm', (django.forms.Form,), fh.formfields)
+class PostTypeForm(forms.Form):
+
+    FieldName = forms.CharField(max_length=200, required=True),
+
+

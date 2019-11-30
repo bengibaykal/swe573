@@ -4,6 +4,8 @@ from django.utils import timezone
 from django.db import models
 from django.contrib.auth.models import User
 from django.utils.text import slugify
+from django.contrib.postgres.fields import ArrayField,JSONField
+from django_jsonforms.forms import JSONSchemaField
 
 # Create your models (python classes) here.
 
@@ -20,6 +22,9 @@ class Community(models.Model):
 
     def __str__(self):
         return self.name
+
+    def __int__(self):
+        return self.id
 
 
 class Post(models.Model):
@@ -70,5 +75,38 @@ class Post2(models.Model):
         self.slug = self.get_slug()
         return super(Post2, self).save(*args, **kwargs)
 
+
+class DataType(models.Model):
+    name = models.CharField(max_length=200)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    extra_fields = JSONField(blank=True, default=dict)
+
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        return super(DataType, self).save(*args, **kwargs)
+
+class Field(models.Model):
+    name = models.CharField(max_length=200)
+    field_type = models.CharField(max_length=200)
+    required = models.CharField(max_length=200)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+    data_type = models.ForeignKey(DataType, on_delete=models.CASCADE)
+
+    def __str__(self):
+        return self.name
+
+    def save(self, *args, **kwargs):
+        return super(Field, self).save(*args, **kwargs)
+
+class DataTypeObject(models.Model):
+    data_type = models.ForeignKey(DataType, on_delete=models.CASCADE)
+    fields = JSONField(blank=True)
+    community = models.ForeignKey(Community, on_delete=models.CASCADE)
+
+    # def __str__(self):
+    #         return self.title
 
 
