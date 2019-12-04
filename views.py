@@ -120,17 +120,55 @@ def data_type_creation(request, communityId):
     return render(request, 'communities/newdatatype.html', {'form': form, 'communityId': communityId})
 
 def datatypefields(request, datatypeId):
+    myDict = {}
+
     #DataType1 = get_object_or_404(DataType, pk=datatypeId)
     DataType1 = DataType.objects.filter(id=datatypeId)
+    community2 = DataType.objects.get(id=datatypeId).community
+
+    print(community2)
+
+    community = Community.objects.get(id = community2)
+    datatype = DataType.objects.get(id = datatypeId)
+    print(community)
+
     print(DataType1)
     DataType.objects.all()
-    Post = Post2.objects
     Field1 = Field.objects.filter(data_type=datatypeId)
+    #datatypejson = serializers.serialize('json', DataType1)
+    #print(datatypejson)
 
-    #json1 = DataType1.extra_fields
-    #print(json1)
+    #datatypejson_name = datatypejson
+    #print(datatypejson_name)
+
+    DataTypeObject1 = DataTypeObject()
+    DataTypeObject1.community = community
+    DataTypeObject1.data_type = datatype
+
+    print(DataTypeObject1)
+    if (request.method == "POST"):
+        print(request.POST)
+        print(request.POST.keys())
+        #print(request.POST['Air Pollution'])
+
+        queryDict = request.POST.keys()
+        myDict = {}
+        for key in queryDict:
+            myDict[key] = request.POST[key]
+        print(myDict)
+        DataTypeObject1.fields = myDict
+        if 'image' in request.FILES:
+            DataTypeObject1.image = request.FILES['image']
+        DataTypeObject1.save()
+        print(DataTypeObject1)
+
+        #key = myDict.keys()
+        #value = myDict.values()
+
     return render(request, 'communities/datatypefields.html',
-                  { 'DataType': DataType1, 'Field': Field1, 'Post': Post})
+                  { 'DataType': DataType1, 'Field': Field1, 'Allfields': myDict })
+
+
 
 
 def field_creation(request, communityId, datatypeId):
@@ -141,11 +179,15 @@ def field_creation(request, communityId, datatypeId):
 
         datatypeform = DataTypeForm(request.POST)
         form = FieldForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            # post.community = Community.objects.get(id = communityId)
-            # post.data_type = DataType.objects.get(id = datatypeId)
-            print(post)
+            Community1 = Community.objects.get(id = communityId)
+            DT1 = DataType.objects.get(id = datatypeId)
+            post.community = Community1
+            post.data_type = DT1
+            #post.required = request.POST.required
+            #print(post.required)
             post.save()
             print(post.name)
 
@@ -160,7 +202,7 @@ def field_creation(request, communityId, datatypeId):
             print(data2)
             data = [x for x in data2 if (x['community'] == communityId and x['data_type'] == datatypeId)]
             print(data)
-            DataType1.extra_fields = data2
+            DataType1.extra_fields = data
             DataType1.save()
             return redirect('index')
     else:

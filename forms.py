@@ -114,9 +114,9 @@ class FieldForm(forms.ModelForm):
 
     class Meta:
         model = Field
-        fields = ('name', 'field_type', 'required', 'community', 'data_type')
+        fields = ('name', 'field_type', 'required')
     #name = forms.CharField(required=True)
-    #field_type = forms.ChoiceField(widget=forms.RadioSelect, choices=('String', 'Integer'), required=True)
+    #field_type = forms.CharField(widget=forms.Select( required=True)
     #required = forms.BooleanField(required=True)
     #community = forms.CharField(required=True)
     #data_type = forms.CharField(required=True)
