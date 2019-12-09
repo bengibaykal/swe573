@@ -29,7 +29,7 @@ urlpatterns = [
     path('datatypelist/<int:id>', views.datatype_list, name='datatype_list'),
     path('postform/new/<int:communityId>/<int:datatypeId>',views.post_form_creation,name='postformcreation'),
     path('datatypefields/<int:datatypeId>', views.datatypefields, name='datatypefields'),
-
+    path('addTag/', views.addTag, name='addTag'),
 
     path('<int:Community_id>',views.detail,name = "detail"),
     path('post/<int:pk>/', views.post_detail, name='post_detail'),

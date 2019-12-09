@@ -121,6 +121,7 @@ def data_type_creation(request, communityId):
 
 def datatypefields(request, datatypeId):
     myDict = {}
+    r_json = {}
 
     #DataType1 = get_object_or_404(DataType, pk=datatypeId)
     DataType1 = DataType.objects.filter(id=datatypeId)
@@ -135,21 +136,18 @@ def datatypefields(request, datatypeId):
     print(DataType1)
     DataType.objects.all()
     Field1 = Field.objects.filter(data_type=datatypeId)
-    #datatypejson = serializers.serialize('json', DataType1)
-    #print(datatypejson)
 
-    #datatypejson_name = datatypejson
-    #print(datatypejson_name)
 
     DataTypeObject1 = DataTypeObject()
     DataTypeObject1.community = community
     DataTypeObject1.data_type = datatype
 
+
     print(DataTypeObject1)
     if (request.method == "POST"):
         print(request.POST)
         print(request.POST.keys())
-        #print(request.POST['Air Pollution'])
+
 
         queryDict = request.POST.keys()
         myDict = {}
@@ -162,8 +160,8 @@ def datatypefields(request, datatypeId):
         DataTypeObject1.save()
         print(DataTypeObject1)
 
-        #key = myDict.keys()
         #value = myDict.values()
+
 
     return render(request, 'communities/datatypefields.html',
                   { 'DataType': DataType1, 'Field': Field1, 'Allfields': myDict })
@@ -209,6 +207,28 @@ def field_creation(request, communityId, datatypeId):
         form = FieldForm()
     return render(request, 'communities/test.html',
                   {'form': form, 'communityId': communityId, 'datatypeId': datatypeId})
+
+def addTag(request):
+    r_json = {}
+    if request.POST:
+        API_ENDPOINT = "https://www.wikidata.org/w/api.php"
+        query = request.POST['tags2']
+        query.replace(" ", "&")
+
+
+        params = {
+            'action': 'wbsearchentities',
+            'format': 'json',
+            'language': 'en',
+            'limit': '20',
+            'search': query
+        }
+        wiki_request = requests.get(API_ENDPOINT, params=params)
+        r_json = wiki_request.json()['search']
+        r_json = json.dumps(r_json)
+        r_json = json.loads(r_json)
+        print(r_json)
+    return render(request, 'communities/addTag.html', {'r_json': r_json})
 
 
 def post_edit(request, id):
