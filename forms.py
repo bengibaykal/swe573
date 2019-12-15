@@ -46,8 +46,18 @@ class CustomForm(forms.Form):
         "properties": {
             "Data Type Type": {
                 "type": "string",
-                "enum": ["Sting", "Boolean", "Integer"],
+                "enum": ["Sting", "Text", "Integer", "Image", "Decimal Number", "Color"],
                 "maxLength": 30,
+            }
+        }
+    }
+
+    enumarated = {
+        "type": "object",
+        "required": ["enumarated"],
+        "properties": {
+            "Data Type Type": {
+                "type": "boolean",
             }
         }
     }
@@ -76,6 +86,11 @@ class CustomForm(forms.Form):
                 "enum": ["String", "Integer", "Boolean", "Image"]
             },
             "is required": {
+                "type": "string",
+                "enum": ["True", "False"]
+
+            },
+            "enumarated": {
                 "type": "string",
                 "enum": ["True", "False"]
 

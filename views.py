@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import Community, Post2, DataTypeObject, DataType, Field
+from django.core.serializers import serialize
 
 from .forms import PostForm, CommunityForm, CustomForm, DataTypeForm, FieldForm, PostTypeForm
 from django.shortcuts import redirect
@@ -14,9 +15,17 @@ import requests
 import json
 import userdefinedfields
 from .serializers import FieldSerializer
+from django.core.serializers.json import DjangoJSONEncoder
+
 
 
 from .forms import CustomForm
+
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, json):
+            return str(obj)
+        return super().default(obj)
 
 def index(request):
     communities = Community.objects
@@ -27,12 +36,15 @@ def specificpost(request, communityId):
     URL = "http://127.0.0.1:8000/api/post/list"
     response = requests.get(URL)
     data = response.json()
-    #idcom = response.json()[0]["communityId"]
-    #idcom = json.dumps(idcom)
-    #idcom = json.loads(idcom)
     data = [x for x in data if x['communityId'] == communityId]
     print(data)
-    return render(request, 'communities/specificpost.html', {'data': data, 'communityId': communityId , 'community': community})
+    dto = DataTypeObject.objects.filter( community = community )
+    print(dto)
+
+
+
+
+    return render(request, 'communities/specificpost.html', {'data': data, 'communityId': communityId , 'community': community , 'dto' : dto })
 
 def onepost(request, id):
     URL = "http://127.0.0.1:8000/api/post/list"
@@ -59,6 +71,9 @@ def post_new(request, communityId):
 
 
 def jsonform(request):
+
+
+
     return render(request, 'communities/jsonform.html', {'form': CustomForm()})
 
 
@@ -121,17 +136,19 @@ def data_type_creation(request, communityId):
 
 def datatypefields(request, datatypeId):
     myDict = {}
-    r_json = {}
+
+    f = {}
+
 
     #DataType1 = get_object_or_404(DataType, pk=datatypeId)
     DataType1 = DataType.objects.filter(id=datatypeId)
     community2 = DataType.objects.get(id=datatypeId).community
 
-    print(community2)
+    #print(community2)
 
     community = Community.objects.get(id = community2)
     datatype = DataType.objects.get(id = datatypeId)
-    print(community)
+    #print(community)
 
     print(DataType1)
     DataType.objects.all()
@@ -143,28 +160,41 @@ def datatypefields(request, datatypeId):
     DataTypeObject1.data_type = datatype
 
 
-    print(DataTypeObject1)
+    #print(DataTypeObject1)
     if (request.method == "POST"):
-        print(request.POST)
-        print(request.POST.keys())
-
-
-        queryDict = request.POST.keys()
         myDict = {}
+
+        # saves as key:value pairs but does not work so changed as below
+        #for key in queryDict:
+        #    myDict[key] = request.POST[key]
+        #print(myDict)
+        # DataTypeObject1.save()
+        # print(DataTypeObject1)
+
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
+        queryDict = query.keys()
+
+
+        f = {}
+        f['fields'] = []
         for key in queryDict:
-            myDict[key] = request.POST[key]
-        print(myDict)
-        DataTypeObject1.fields = myDict
-        if 'image' in request.FILES:
-            DataTypeObject1.image = request.FILES['image']
+          myDict= {  'name': key,
+                   'value' :   request.POST[key],
+              }
+
+          f['fields'].append(myDict)
+        DataTypeObject1.fields = f
         DataTypeObject1.save()
         print(DataTypeObject1)
 
         #value = myDict.values()
 
-
     return render(request, 'communities/datatypefields.html',
-                  { 'DataType': DataType1, 'Field': Field1, 'Allfields': myDict })
+                  { 'DataType': DataType1, 'Field': Field1, 'Allfields': myDict , 'fields': f })
 
 
 
@@ -175,7 +205,7 @@ def field_creation(request, communityId, datatypeId):
 
     if request.method == "POST":
 
-        datatypeform = DataTypeForm(request.POST)
+        #datatypeform = DataTypeForm(request.POST)
         form = FieldForm(request.POST)
         print(request.POST)
         if form.is_valid():
@@ -186,6 +216,7 @@ def field_creation(request, communityId, datatypeId):
             post.data_type = DT1
             #post.required = request.POST.required
             #print(post.required)
+
             post.save()
             print(post.name)
 
@@ -207,6 +238,57 @@ def field_creation(request, communityId, datatypeId):
         form = FieldForm()
     return render(request, 'communities/test.html',
                   {'form': form, 'communityId': communityId, 'datatypeId': datatypeId})
+
+def field_creation2(request, communityId, datatypeId):
+    myDict = {}
+    Community1 = Community.objects.get(id=communityId)
+    DT1 = DataType.objects.get(id=datatypeId)
+
+    if (request.method == "POST"):
+        queryDict = request.POST.keys()
+        queryDict2 = queryDict
+
+        print(queryDict2)
+        myDict = {}
+        for key in queryDict:
+            myDict[key] = request.POST[key]
+        myDict['community'] = communityId
+        myDict['data_type'] = datatypeId
+        print(myDict)
+        del myDict['csrfmiddlewaretoken']
+        print(myDict)
+        #DT1.extra_fields = myDict
+        existing_fields = DT1.extra_fields
+
+
+        #DT1.extra_fields == {}:
+        #existing_field
+
+        #d1 = DT1.extra_fields
+        #print(d1)
+        #d2 = dict((list(d1.items())) + list(myDict.items()))
+        #print("d2")
+        #print( d2)
+
+        myDict1 = json.dumps(myDict, skipkeys=" ")
+
+        existing_field1 = json.dumps(existing_fields)
+        a="["
+        if a in existing_field1 :
+            existing_field1 = existing_field1[:-1]
+            existing_field1 = existing_field1[-1:]
+        print(existing_field1)
+        #dictnew = "[" + existing_field1 + "," + myDict1 + "]"
+
+        #DT1.extra_fields = json.loads(dictnew)
+
+        print("dictnew")
+        print(dictnew)
+        #print(DT1)
+        DT1.save()
+
+    return render(request, 'communities/test.html',
+                  {'DT': DT1, 'Allfields': myDict})
 
 def addTag(request):
     r_json = {}
@@ -265,6 +347,55 @@ def post_form_creation(request, communityId, datatypeId):
     print(name)
     return render(request, 'communities/postformcreation.html', { 'form': form, 'community': community, 'datatype': datatype, 'name':name})
 
+
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+def asearch(request):
+    community = Community.objects.all()
+    post = Post2.objects.all()
+    qs = DataTypeObject.objects.all()
+    tags = DataTypeObject.objects.all()
+    print(request.GET)
+    print(community)
+
+    title_contains_query = request.GET.get('title_contains')
+    community_query = request.GET.get('community_query')
+
+    id_exact_query = request.GET.get('id_exact')
+    title_or_desc_query = request.GET.get('title_or_author')
+    view_count_min = request.GET.get('view_count_min')
+    view_count_max = request.GET.get('view_count_max')
+    date_min = request.GET.get('date_min')
+    date_max = request.GET.get('date_max')
+
+
+    if is_valid_queryparam(title_contains_query):
+        qs = qs.filter(fields__icontains=title_contains_query)
+
+    elif is_valid_queryparam(title_contains_query):
+        post = post.filter(title__icontains=title_contains_query)
+
+
+    elif is_valid_queryparam(community_query):
+        community = community.filter(name__icontains=community_query)
+
+
+    elif is_valid_queryparam(id_exact_query):
+        qs = qs.filter(fields__icontains=id_exact_query)
+        wanted_id = qs.filter(id = 1000000)
+        for p in qs:
+            print(p.fields['fields'][-1]['value'])
+            if id_exact_query in p.fields['fields'][-1]['value']:
+               print(p)
+               qs = DataTypeObject.objects.filter(id = p.id)
+               wanted_id = qs | wanted_id
+            qs = wanted_id
+
+            print(wanted_id)
+
+
+    return render(request, 'communities/asearch.html', {'datatypeobjects': qs , 'community':community, 'posts': post })
 
 
 ##########
