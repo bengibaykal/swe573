@@ -23,6 +23,7 @@ urlpatterns = [
 
 
     path('datatype/new/<int:communityId>', views.data_type_creation, name='newdatatype'),
+
     path('field/new/<int:communityId>/<int:datatypeId>', views.field_creation, name='test'),
 
     path('post/<int:id>/edit/', views.post_edit, name='post_edit'),
@@ -30,7 +31,7 @@ urlpatterns = [
     path('postform/new/<int:communityId>/<int:datatypeId>',views.post_form_creation,name='postformcreation'),
     path('datatypefields/<int:datatypeId>', views.datatypefields, name='datatypefields'),
     path('addTag/', views.addTag, name='addTag'),
-    path('asearch/', views.asearch, name='asearch'),
+    path('search/', views.asearch, name='asearch'),
 
     path('<int:Community_id>',views.detail,name = "detail"),
     path('post/<int:pk>/', views.post_detail, name='post_detail'),

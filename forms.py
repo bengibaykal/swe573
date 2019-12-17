@@ -92,7 +92,9 @@ class CustomForm(forms.Form):
             },
             "enumarated": {
                 "type": "string",
-                "enum": ["True", "False"]
+                "enum": ["True"
+
+                        , "False"]
 
             }
 

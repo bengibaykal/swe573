@@ -41,9 +41,6 @@ def specificpost(request, communityId):
     dto = DataTypeObject.objects.filter( community = community )
     print(dto)
 
-
-
-
     return render(request, 'communities/specificpost.html', {'data': data, 'communityId': communityId , 'community': community , 'dto' : dto })
 
 def onepost(request, id):
@@ -71,8 +68,8 @@ def post_new(request, communityId):
 
 
 def jsonform(request):
-
-
+    if request.method == "POST":
+        print(request.POST)
 
     return render(request, 'communities/jsonform.html', {'form': CustomForm()})
 
@@ -120,26 +117,43 @@ def detail(request, Community_id):
 
 def data_type_creation(request, communityId):
 
-    if request.method == "POST":
+    # if request.method == "POST":
+    #     form = DataTypeForm(request.POST)
+    #     if form.is_valid():
+    #         post = form.save(commit=False)
+    #         post.communityId = Community.objects.get(id = communityId)
+    #         post.save()
+    #         print(post)
+    #         return redirect('index')
+    # else:
+    #     form = DataTypeForm()
+    # return render(request, 'communities/newdatatype.html', {'form': form, 'communityId': communityId})
+    community = Community.objects.get(id=communityId)
+    DataType1 = DataType()
 
-        form = DataTypeForm(request.POST)
+    if (request.method == "POST"):
 
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.communityId = Community.objects.get(id = communityId)
-            post.save()
-            print(post)
-            return redirect('index')
-    else:
-        form = DataTypeForm()
-    return render(request, 'communities/newdatatype.html', {'form': form, 'communityId': communityId})
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
+
+        print(query['datatypename'])
+
+
+        DataType1.community = Community.objects.get(id=communityId)
+        DataType1.name = query['datatypename']
+        DataType1.extra_fields = {}
+        DataType1.save()
+        print(DataType1.extra_fields)
+
+    return render(request, 'communities/newdatatype.html', {'DataType': DataType1 , 'dto': DataType1 ,  'communityId': communityId , 'community': community } )
 
 def datatypefields(request, datatypeId):
     myDict = {}
 
     f = {}
-
-
     #DataType1 = get_object_or_404(DataType, pk=datatypeId)
     DataType1 = DataType.objects.filter(id=datatypeId)
     community2 = DataType.objects.get(id=datatypeId).community
@@ -245,8 +259,28 @@ def field_creation2(request, communityId, datatypeId):
     DT1 = DataType.objects.get(id=datatypeId)
 
     if (request.method == "POST"):
-        queryDict = request.POST.keys()
-        queryDict2 = queryDict
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
+
+        print(query)
+        queryDict = query.keys()
+
+#######################################
+        f = {}
+        f['extra_fields'] = []
+        for key in queryDict:
+          myDict= {  key, request.POST[key] }
+          print(myDict)
+
+          f['fields'].append(myDict)
+        #DataTypeObject1.fields = f
+        #DataTypeObject1.save()
+        #print(DataTypeObject1)
+
+
 
         print(queryDict2)
         myDict = {}
@@ -255,40 +289,10 @@ def field_creation2(request, communityId, datatypeId):
         myDict['community'] = communityId
         myDict['data_type'] = datatypeId
         print(myDict)
-        del myDict['csrfmiddlewaretoken']
-        print(myDict)
-        #DT1.extra_fields = myDict
-        existing_fields = DT1.extra_fields
 
+        #DT1.save()
 
-        #DT1.extra_fields == {}:
-        #existing_field
-
-        #d1 = DT1.extra_fields
-        #print(d1)
-        #d2 = dict((list(d1.items())) + list(myDict.items()))
-        #print("d2")
-        #print( d2)
-
-        myDict1 = json.dumps(myDict, skipkeys=" ")
-
-        existing_field1 = json.dumps(existing_fields)
-        a="["
-        if a in existing_field1 :
-            existing_field1 = existing_field1[:-1]
-            existing_field1 = existing_field1[-1:]
-        print(existing_field1)
-        #dictnew = "[" + existing_field1 + "," + myDict1 + "]"
-
-        #DT1.extra_fields = json.loads(dictnew)
-
-        print("dictnew")
-        print(dictnew)
-        #print(DT1)
-        DT1.save()
-
-    return render(request, 'communities/test.html',
-                  {'DT': DT1, 'Allfields': myDict})
+    return render(request, 'communities/test.html',  {'DT': DT1, 'Allfields': myDict})
 
 def addTag(request):
     r_json = {}
@@ -361,16 +365,36 @@ def asearch(request):
 
     title_contains_query = request.GET.get('title_contains')
     community_query = request.GET.get('community_query')
-
     id_exact_query = request.GET.get('id_exact')
+    field_query = request.GET.get('field_query')
+    all_fields = request.GET.get('all_fields')
+
     title_or_desc_query = request.GET.get('title_or_author')
     view_count_min = request.GET.get('view_count_min')
     view_count_max = request.GET.get('view_count_max')
     date_min = request.GET.get('date_min')
     date_max = request.GET.get('date_max')
+    print (all_fields)
+    if all_fields == 'on':
+        qs = qs.filter(fields__icontains=title_contains_query)
+        print('on')
+        print(qs)
+        qs1 = qs.filter(fields__icontains=title_contains_query)
+        print(qs1)
+        qs2 = qs1.filter(community__id__icontains=community_query)
+        print(qs2)
+        wanted_id = qs2.filter(id=1000000)
+
+        for p in qs:
+            #print(p.fields['fields'][-1]['value'])
+            if id_exact_query in p.fields['fields'][-1]['value']:
+                print(p)
+                qs2 = DataTypeObject.objects.filter(id=p.id)
+                wanted_id = qs2 | wanted_id
+        qs = wanted_id
 
 
-    if is_valid_queryparam(title_contains_query):
+    elif is_valid_queryparam(title_contains_query):
         qs = qs.filter(fields__icontains=title_contains_query)
 
     elif is_valid_queryparam(title_contains_query):
@@ -378,7 +402,11 @@ def asearch(request):
 
 
     elif is_valid_queryparam(community_query):
+        qs = qs.filter(community__id__icontains=community_query)
+        print(qs)
         community = community.filter(name__icontains=community_query)
+        wanted_id = qs.filter(id=1000000)
+        print(community)
 
 
     elif is_valid_queryparam(id_exact_query):
@@ -393,6 +421,10 @@ def asearch(request):
             qs = wanted_id
 
             print(wanted_id)
+
+    elif is_valid_queryparam(field_query):
+        qs = Field.objects.filter(name__icontains=field_query)
+
 
 
     return render(request, 'communities/asearch.html', {'datatypeobjects': qs , 'community':community, 'posts': post })
