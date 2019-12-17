@@ -1,9 +1,4 @@
-{% load static %}
-
-
-
-
-<!doctype html>
+ <!doctype html>
 <html lang="en">
   <head>
     <meta charset="utf-8">
@@ -48,13 +43,19 @@
   <div class="collapse navbar-collapse" id="navbarsExampleDefault">
     <ul class="navbar-nav mr-auto">
       <li class="nav-item active">
-        <a class="nav-link" href=" ">Home <span class="sr-only">(current)</span></a>
+        <a class="nav-link" href="{% url 'index' %}">Home <span class="sr-only">(current)</span></a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{% url 'post_new' communityId %}">New Post</a>
       </li>
 <!--      <li class="nav-item">-->
-<!--        <a class="nav-link" href="">New Post</a>-->
+<!--        <a class="nav-link disabled" href="{% url 'jsonform' %}">Create New Data Type</a>-->
 <!--      </li>-->
 <!--      <li class="nav-item">-->
-<!--        <a class="nav-link disabled" href="#">Create New Data Type</a>-->
+<!--        <a class="nav-link" href="#">Posts</a>-->
+<!--      </li>-->
+<!--      <li class="nav-item">-->
+<!--        <a class="nav-link disabled" href="#">Disabled</a>-->
 <!--      </li>-->
 <!--      <li class="nav-item dropdown">-->
 <!--        <a class="nav-link dropdown-toggle" href="#" id="dropdown01" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Dropdown</a>-->
@@ -65,50 +66,101 @@
 <!--        </div>-->
 <!--      </li>-->
     </ul>
-    <form class="form-inline my-2 my-lg-0">
-      <input class="form-control mr-sm-2" type="text" placeholder="Search" aria-label="Search">
-      <button class="btn btn-outline-success my-2 my-sm-0" type="submit">Search</button>
-    </form>
+
   </div>
 </nav>
 
 <main role="main">
-
-  <!-- Main jumbotron for a primary marketing message or call to action -->
-  <div class="jumbotron">
-    <div class="container">
-      <h1 class="display-3">Create New Community</h1>
-      <p></p>
-<!--      <p><a class="btn btn-primary btn-lg" href="#" role="button">Create Data Type &raquo;</a></p>-->
+   <div class="jumbotron">
+   <div class="container">
+    <section class="jumbotron text-center" style="background:gray">
+    <div class="container" >
+      <h1 class="jumbotron-heading">Add New Datatypes to {{ community.name }} Community ! </h1>
+      <p>
+      </p>
     </div>
-  </div>
+    </section>
+   </div>
+   </div>
+
+
 
  <div class="jumbotron">
-  <div class="container">
-    <!-- Example row of columns -->
-    <div class="row">
+   <div class="container">
 
+    <div class="form-group">
+     <form method="POST" class="form-inline my-2 my-lg-0" >
+     {% csrf_token %}
 
-      <form method="POST" class="post-form" enctype="multipart/form-data">{% csrf_token %}
-        {{ form.as_p }}
-      <button type="submit"  class="btn btn-outline-success my-2 my-sm-0">Submit</button>
+<div class="form-group row">
+        <div class="form-group col-md-6">
+          <label for="datatypename">Data Type Name</label>
+          <input type="text" class="form-control" required id="idatatypename" name="datatypename" placeholder="Enter a Data Type Name">
+         </div>
+</div>
+<div class="form-group row">
+        <div class="form-group col-md-6">
+           <label for="community">Community</label>
+           <input type="text" class="form-control" id="community" placeholder="{{ community.name }}" readonly >
+        </div>
+</div>
+
+         <p><button type="submit" class="btn btn-primary" >Create</button></p>
       </form>
 
     </div>
-    <hr>
-  </div> <!-- /container -->
- </div>
+   </div>
+<!--     <p><input type="button" class="btn btn-primary" value="Add Data Fields"></input></p>-->
+  </div>
+
+  <div class="album py-5 bg-light">
+    <div class="container" >
+        {% for f in DataType.all %}
+        <div class="col-md-4">
+          <div class="card mb-4 shadow-sm">
+
+
+            <text><center>{{ f.name }} </center></text>
+
+
+
+            <div class="card-body">
+              <p class="card-text" left=10px></p>
+              <div class="d-flex justify-content-between align-items-center">
+                <div class="btn-group">
+                  <button type="button" class="btn btn-sm btn-outline-secondary">View</button>
+<!--                  <button type="button" class="btn btn-sm btn-outline-secondary">Add Type</button>-->
+                </div>
+                <small class="text-muted"></small>
+              </div>
+            </div>
+          </div>
+        </div>
+       {% endfor %}
+    </div>
+  </div>
+
 
 </main>
 
 <footer class="container">
-  <p>&copy; Company 2017-2019</p>
+
 </footer>
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
-  </body>
+
+<script>
+
+Document.getElement
+
+</script>
+
+
+
+</body>
 
 
 </html>
+

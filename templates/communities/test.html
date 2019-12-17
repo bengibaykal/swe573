@@ -1,0 +1,77 @@
+
+
+<!DOCTYPE html>
+<html>
+<head>
+<script src="https://code.jquery.com/jquery-1.12.4.min.js"></script>
+
+</head>
+
+<body>
+      <form method="POST" class="post-form">{% csrf_token %}
+<!--        {{ form.as_p }}-->
+   <p><label for="name">Name:</label>
+    <input type="text" name="name" maxlength="200" required id="name"></p>
+
+    <p><label for="required">Required:</label>
+    <select name="required" name="required" maxlength="200" required id="required">
+    <option value="" selected>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>
+    <option value="yes">Yes</option>
+    <option value="no">No</option>
+    </select></p>
+
+     <p><label for="field_type">Field type:</label>
+     <select name="field_type" required id="field_type">
+     <option value="" selected>-&#45;&#45;&#45;&#45;&#45;&#45;&#45;&#45;</option>
+     <option value="Text">Text</option>
+     <option value="Integer">Integer</option>
+     <option value="Color">Color</option>
+     <option value="Image">Image</option>
+     <option value="Decimal Number">Decimal Number</option>
+     <option value="Geolocation">Geolocation</option>
+     <option value="Date">Date</option>
+     <option value="email">Email</option>
+     <option value="url">URL</option>
+     <option value="Date">Date</option>
+     </select></p>
+
+<!--     <label class="checkbox">Enumarated?-->
+<!--     <input type="checkbox" id="cb_post" name="enum">-->
+<!--     <div id = "hiddenDiv">-->
+<!--     <input type="button" id="tagtopost" style="color: #000000;"  value="New Field" onclick="addField()"></p>-->
+<!--     <p><input type="text" name="option1" maxlength="200"  id="option1"></p>-->
+<!--     <p><input type="text" name="option2" maxlength="200"  id="option2"></p>-->
+
+     </div>
+
+
+     </label>
+          <p><button type="submit"  class="btn btn-outline-success my-2 my-sm-0">Submit</button></p>
+
+
+
+
+      </form>
+
+
+<script>
+
+window.onload = document.getElementById('hiddenDiv').style.display = 'none'
+$("#cb_post").on('click', function(){
+    $("#hiddenDiv").toggle();
+
+});
+
+var FieldCount=3;
+function addField() {
+ var d = document.getElementById("hiddenDiv");
+
+   d.innerHTML += "<p><input type='text'<input type='text' name='option3' maxlength='200' /></p>";
+   FieldCount++;
+}
+
+
+</script>
+</body>
+
+</html>
