@@ -33,23 +33,24 @@ def index(request):
 
 def specificpost(request, communityId):
     community = Community.objects.get(id=communityId)
-    URL = "http://127.0.0.1:8000/api/post/list"
-    response = requests.get(URL)
-    data = response.json()
-    data = [x for x in data if x['communityId'] == communityId]
-    print(data)
+    #URL = "http://127.0.0.1:8000/api/post/list"
+    #response = requests.get(URL)
+    #data = response.json()
+    #data = [x for x in data if x['communityId'] == communityId]
+    #print(data)
     dto = DataTypeObject.objects.filter( community = community )
     print(dto)
 
-    return render(request, 'communities/specificpost.html', {'data': data, 'communityId': communityId , 'community': community , 'dto' : dto })
+    return render(request, 'communities/specificpost.html', { 'communityId': communityId , 'community': community , 'dto' : dto })
 
+#TODO: sil
 def onepost(request, id):
-    URL = "http://127.0.0.1:8000/api/post/list"
-    response = requests.get(URL)
-    data = response.json()
-    data = [x for x in data if x['id'] == id]
-    print(data)
-    return render(request, 'communities/onepost.html', {'data': data, 'id':id})
+    #URL = "http://127.0.0.1:8000/api/post/list"
+    #response = requests.get(URL)
+    #data = response.json()
+    #data = [x for x in data if x['id'] == id]
+    #print(data)
+    return render(request, 'communities/onepost.html', {'id':id})
 
 
 def post_new(request, communityId):
@@ -89,15 +90,15 @@ def newcommunity(request):
         form = CommunityForm()
     return render(request, 'communities/newcommunity.html', {'form': form})
 
-#TODO:community search
+#TODO: normal search yap
 def search(request, searchtext):
 
-        URL = "http://127.0.0.1:8000/api/post/community?search={}".format(searchtext)
-        response = requests.get(URL)
-        data = response.json()
+        #URL = "http://127.0.0.1:8000/api/post/community?search={}".format(searchtext)
+        #response = requests.get(URL)
+        #data = response.json()
 
-        print(data)
-        return render(request, 'communities/onepost.html', {'data': data, 'id': id})
+        #print(data)
+        return render(request, 'communities/onepost.html', )
 
 
 class TestDashboardView(TemplateView):
@@ -165,7 +166,7 @@ def datatypefields(request, datatypeId):
     #print(community)
 
     print(DataType1)
-    DataType.objects.all()
+    #DataType.objects.all()
     Field1 = Field.objects.filter(data_type=datatypeId)
 
 
@@ -177,6 +178,22 @@ def datatypefields(request, datatypeId):
     #print(DataTypeObject1)
     if (request.method == "POST"):
         myDict = {}
+        #geolocation = request.POST.get('geolocation')
+        #name = request.POST.get('name')
+        #if geolocation != "":
+        #    myDict = {'name': "geolocation",
+        #              'value': request.POST['geolocation'],
+        #              }
+        #elif geolocation == "":
+        #    print("Girmedi")
+        #elif name != "":
+        #    myDict = {'name': "name",
+        #              'value': request.POST['name'],
+        #              }
+        #else:
+        #    print("hiç girmedi")
+        #
+        #print(myDict)
 
         # saves as key:value pairs but does not work so changed as below
         #for key in queryDict:
@@ -196,11 +213,35 @@ def datatypefields(request, datatypeId):
         f = {}
         f['fields'] = []
         for key in queryDict:
-          myDict= {  'name': key,
-                   'value' :   request.POST[key],
-              }
+          myDict= {  'name':  key,
+                   'value' :   request.POST[key]
+                  }
 
           f['fields'].append(myDict)
+
+        tagname = request.POST['tags']
+        print(tagname)
+        tagname = tagname.split(',')
+        print(tagname)
+
+        #TODO:tagler ayrı yazılacaksa searchte de burada aranmalı
+        #tags= {}
+        #tags['tags'] = []
+        #for tagpair in tagname:
+        #  if ':' in tagpair:
+        #    m = tagpair.index(':')
+        #    l = tagpair[:m]
+        #    q = tagpair[m:]
+        #    print(l)
+        #    print(q)
+        #
+        #    tags1 = { 'tagname' :  l,
+        #            'Qvalue'   : q
+        #              }
+        #    tags['tags'].append(tags1)
+        #f['fields'].append(tags)
+        #print(f)
+
         DataTypeObject1.fields = f
         DataTypeObject1.save()
         print(DataTypeObject1)
@@ -234,25 +275,13 @@ def field_creation(request, communityId, datatypeId):
             post.save()
             print(post.name)
 
-            DataType1 = DataType.objects.get(pk=post.data_type_id)
-            # data  = FieldSerializer(post).data
-            # print(data)
-            # data2 = JsonResponse(data)
-            # print(data2)
-            URL = "http://127.0.0.1:8000/api/post/field/2"
-            response = requests.get(URL)
-            data2 = response.json()
-            print(data2)
-            data = [x for x in data2 if (x['community'] == communityId and x['data_type'] == datatypeId)]
-            print(data)
-            DataType1.extra_fields = data
-            DataType1.save()
             return redirect('index')
     else:
         form = FieldForm()
     return render(request, 'communities/test.html',
                   {'form': form, 'communityId': communityId, 'datatypeId': datatypeId})
 
+#TODO:Not using field creation2
 def field_creation2(request, communityId, datatypeId):
     myDict = {}
     Community1 = Community.objects.get(id=communityId)
@@ -279,8 +308,6 @@ def field_creation2(request, communityId, datatypeId):
         #DataTypeObject1.fields = f
         #DataTypeObject1.save()
         #print(DataTypeObject1)
-
-
 
         print(queryDict2)
         myDict = {}
@@ -337,21 +364,21 @@ def datatype_list(request, id):
     print(datatypes)
     return render(request, 'communities/datatype_list.html', {'datatypes': datatypes , 'community':community})
 
-#TODO: Create JSON Based Form Entry
+#TODO: Delete
 def post_form_creation(request, communityId, datatypeId):
-    form = PostTypeForm(request.POST)
-    post = form
-    post.modified_by = request.user
-    post.communityId = Community.objects.get(id=communityId)
+    #form = PostTypeForm(request.POST)
+    #post = form
+    #post.modified_by = request.user
+    #post.communityId = Community.objects.get(id=communityId)
     #print(post)
-    community = Community.objects.get(id=communityId)
-    datatype = DataType.objects.get(id=datatypeId)
-    extrafields = datatype.extra_fields
-    name = extrafields['name']
-    print(name)
-    return render(request, 'communities/postformcreation.html', { 'form': form, 'community': community, 'datatype': datatype, 'name':name})
+    #community = Community.objects.get(id=communityId)
+    #datatype = DataType.objects.get(id=datatypeId)
+    #extrafields = datatype.extra_fields
+    #name = extrafields['name']
+    #print(name)
+    return render(request, 'communities/postformcreation.html', { })
 
-
+# search helper function
 def is_valid_queryparam(param):
     return param != '' and param is not None
 
@@ -396,6 +423,7 @@ def asearch(request):
 
     elif is_valid_queryparam(title_contains_query):
         qs = qs.filter(fields__icontains=title_contains_query)
+        print(qs)
 
     elif is_valid_queryparam(title_contains_query):
         post = post.filter(title__icontains=title_contains_query)
@@ -413,7 +441,7 @@ def asearch(request):
         qs = qs.filter(fields__icontains=id_exact_query)
         wanted_id = qs.filter(id = 1000000)
         for p in qs:
-            print(p.fields['fields'][-1]['value'])
+            #print(p.fields['fields'][-1]['value'])
             if id_exact_query in p.fields['fields'][-1]['value']:
                print(p)
                qs = DataTypeObject.objects.filter(id = p.id)
