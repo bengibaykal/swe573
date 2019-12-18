@@ -23,16 +23,54 @@
     {#    Tags input#}
     <link href="https://cdn.jsdelivr.net/bootstrap.tagsinput/0.8.0/bootstrap-tagsinput.css" rel="stylesheet"/>
 
-### MAPS
+
      <style type="text/css">
           #map{ width:700px; height: 500px; }
         </style>
         <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js"></script>
-        <title>Save Marker Example</title>
+
 
 
 </head>
 <body>
+
+<header>
+  <div class="collapse bg-dark" id="navbarHeader">
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-8 col-md-7 py-4">
+          <h4 class="text-white">About</h4>
+          <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+        </div>
+        <div class="col-sm-4 offset-md-1 py-4">
+          <h4 class="text-white">Contact</h4>
+          <ul class="list-unstyled">
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+
+ <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+  <a class="navbar-brand" href="{% url 'index' %}">Commonity</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+ </nav>
+
+</header>
+
+
+<div class="album py-5 bg-light">
+<div class="container" >
 
 <form method = POST enctype="multipart/form-data">
 {% csrf_token %}
@@ -41,10 +79,14 @@
  <div class="card-header">Add Fields for the {{DataType}} DataType!</div>
     {%  endfor %}
 
+
         Title:
-        <input type="text" name="title" id="title" style="color: #000000;"><br>
+        <input type="text" required step=0.01 class="form-control" id="title" aria-describedby="title"
+                placeholder="Enter Title" name="title">
+
         Description:
-        <input type="text" color="black" name="description" style="color: #000000;"><br>
+        <input type="text" required step=0.01 class="form-control" id="description" aria-describedby="description"
+                placeholder="Enter Description" name="description">
 <!--        Cemantic Tags:-->
 <!--        <input type="text" data-role="tagsinput" name="tags"><br>-->
 
@@ -52,19 +94,9 @@
 
 {% for Field in Field.all %}
 
-     {{Field.name}}
-  <p><input type="{{Field.field_type}}" name="{{Field.name}}" style="color: #000000;" width="100%"><br></p>
+<!--     {{Field.name}}-->
+<!--  <p><input type="{{Field.field_type}}" name="{{Field.name}}" style="color: #000000;" width="100%"><br></p>-->
 
-    {% if Field.enumerated == "Yes"%}
-            <select class="form-control" class="form-control" id="{{Field.name}}" name="{{Field.name}}">
-                {% if field.required == "No" %}
-                <option>[Leave Empty]</option>
-                {% endif %}
-                {% for option in field.options %}
-                <option>{{option}}</option>
-                {% endfor %}
-            </select>
-    {% endif  %}
 
    {% if Field.field_type == "Image" %}
     <label for="id_image">Image:</label>
@@ -73,38 +105,90 @@
 
     {% endif  %}
 
+
+
     {% if Field.field_type == "Date" %}
+    {{Field.name}}:
+        {% if Field.required == "yes" %}
             <input type="Date" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
-                placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+                placeholder="Enter {{Field.name}}" required name="{{Field.name}}"></br>
+        {% elif Field.required == "No" %}
+            <input type="Date" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" name="{{Field.name}}"></br>
+     {% endif %}
+
     {% endif  %}
     {% if Field.field_type == "Time" %}
+    {{Field.name}}:
+            {% if Field.required == "yes" %}
+            <input type="Time" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" required name="{{Field.name}}">
+            {% elif Field.required == "No" %}
             <input type="Time" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
                 placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+            {% endif  %}
     {% endif  %}
+
+
     {% if Field.field_type == "Integer" %}
+    {{Field.name}}:
+            {% if Field.required == "yes" %}
+            <input type="number" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" required name="{{Field.name}}">
+            {% elif Field.required == "no" %}
             <input type="number" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
                 placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+            {% endif  %}
     {% endif  %}
+
     {% if Field.field_type == "Text" %}
+    {{Field.name}}:
+        {% if Field.required == "yes" %}
+            <input type="text" class="form-control" required id="{{Field.name}}" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+        {% elif Field.required == "no" %}
             <input type="text" class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
                 placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+        {% endif  %}
     {% endif  %}
+
+
     {% if Field.field_type == "Decimal Number" %}
+    {{Field.name}}:
+            {% if Field.required == "yes" %}
+            <input type="number" step=0.01 class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" required name="{{Field.name}}">
+            {% elif Field.required == "no" %}
             <input type="number" step=0.01 class="form-control" id="{{Field.name}}" aria-describedby="{{Field.name}}"
                 placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+            {% endif  %}
     {% endif  %}
+
+
     {% if Field.field_type == "Geolocation" %}
+    {{Field.name}}:
+            {% if Field.required == "yes" %}
             <input type="text" step=0.01 class="form-control" id="geolocation" aria-describedby="{{Field.name}}"
-                placeholder="Enter {{Field.name}}" name="{{Field.name}}">
-
+                placeholder="Enter {{Field.name}}" name="{{Field.name}}" >
+            <label onclick="getLocation()"  >Click for Auto-fill location</label>
+            {% elif Field.required == "no" %}
+             <input type="text" step=0.01 class="form-control" id="geolocation" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" name="{{Field.name}}" >
+            <label onclick="getLocation()"  >Click for Auto-fill location</label>
+            {% endif  %}
     {% endif  %}
 
+    {% if Field.field_type == "Color" %}
+    {{Field.name}}:
+            <input type="color" step=0.01 class="form-control" id="color" aria-describedby="{{Field.name}}"
+                placeholder="Enter {{Field.name}}" name="{{Field.name}}">
+    {% endif  %}
 
 
  {% endfor %}
 <div class="form-group" onsubmit="">
     <p><label for="tags">Semantic Tags</label></p>
-                <input type="text" id="semantictags"  class="floatLabel" name="tags" data-role="tagsinput" width="100%" style="color: #000000;">
+                <input type="text" id="semantictags" required class="floatLabel" class="form-control" name="tags" data-role="tagsinput" width="100%" style="color: #000000;">
 <!--                <p><input type="button" i onclick="addTag() " style="color: #000000;"  value="Continue to Create Post"></p>-->
              <a href = "{% url 'addTag'  %}">
             <button type="button" style="color: #000000;" name="tagbutton">Search Tags</button>
@@ -118,27 +202,37 @@
 <p><input type="submit" style="color: #000000;"></p>
 
 </div>
-    {% for x in Allfields.keys %}
-    <p><label>{{x}}</label></p>
+<!--    {% for x in Allfields.keys %}-->
+<!--    <p><label>{{x}}</label></p>-->
 
-    {% endfor %}
+<!--    {% endfor %}-->
 
-    {% for y in Allfields.values %}
-    <p><label>{{y}}</label></p>
-    {% endfor %}
+<!--    {% for y in Allfields.values %}-->
+<!--    <p><label>{{y}}</label></p>-->
+<!--    {% endfor %}-->
 
 
-    {% for f in fields.fields %}
-    <p><label>{{f.name}} : {{f.value}}</label></p>
-    {% endfor %}
+<!--    {% for f in fields.fields %}-->
+<!--&lt;!&ndash;    <-&#45;&#45;&#45;&#45; <p><label>{{f.name}} : {{f.value}}</label></p>-&ndash;&gt;&ndash;&gt;-->
+<!--    {{f.name}} :-->
+<!--    <p><input type="{{f.field_type}}" value="{{f.value}}" readonly> </input></p>-->
+<!--    <input type="{{f.field_type}}" step=0.01 class="form-control" id="{{f.name}} " aria-describedby="{{Field.name}}"-->
+<!--           value="{{f.value}}"      name="{{f.name}} ">-->
+<!--    {% endfor %}-->
 
 
 
 </form>
+</div>
+</div>
 
-<button onclick="getLocation()">Where am I?</button>
+
+<button onclick="getLocation()" center >Auto-fill location</button>
 <p id="location"></p>
 
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
 
 <script>
 
@@ -148,67 +242,12 @@ window.onload = addTag();
 function addTag() {
     document.getElementById("semantictags").value = localStorage.getItem("labeltag");
     document.getElementById("semantictags").innerHTML = localStorage.getItem("labeltag");
+    document.getElementById("geolocation").innerHTML = " " + position.coords.latitude +
+	  "," + position.coords.longitude;
 }
 
-window.onload = initMap();
+window.onload = getPosition();
 
-var map; //Will contain map object.
-var marker = false; ////Has the user plotted their location marker?
-
-//Function called to initialize / create the map.
-//This is called when the page has loaded.
-function initMap() {
-
-    //The center location of our map.
-    var centerOfMap = new google.maps.LatLng(52.357971, -6.516758);
-
-    //Map options.
-    var options = {
-      center: centerOfMap, //Set center.
-      zoom: 7 //The zoom value.
-    };
-
-    //Create the map object.
-    map = new google.maps(document.getElementById('map'), options);
-
-    //Listen for any clicks on the map.
-    google.maps.event.addListener(map, 'click', function(event) {
-        //Get the location that the user clicked.
-        var clickedLocation = event.latLng;
-        //If the marker hasn't been added.
-        if(marker === false){
-            //Create the marker.
-            marker = new google.maps.Marker({
-                position: clickedLocation,
-                map: map,
-                draggable: true //make it draggable
-            });
-            //Listen for drag events!
-            google.maps.event.addListener(marker, 'dragend', function(event){
-                markerLocation();
-            });
-        } else{
-            //Marker has already been added, so just change its location.
-            marker.setPosition(clickedLocation);
-        }
-        //Get the marker's location.
-        markerLocation();
-    });
-}
-
-//This function will get the marker's current location and then add the lat/long
-//values to our textfields so that we can save the location.
-function markerLocation(){
-    //Get location.
-    var currentLocation = marker.getPosition();
-    //Add lat and lng values to a field that we can save.
-    document.getElementById('lat').value = currentLocation.lat(); //latitude
-    document.getElementById('lng').value = currentLocation.lng(); //longitude
-}
-
-
-//Load the map when the page has finished loading.
-google.maps.event.addDomListener(window, 'load', initMap);
 
 
 function getLocation()
