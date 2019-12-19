@@ -402,32 +402,75 @@ def asearch(request):
     date_min = request.GET.get('date_min')
     date_max = request.GET.get('date_max')
     print (all_fields)
+
+    ## advanced combined search
     if all_fields == 'on':
+        # Filter post titles
+        #qs = qs.filter(fields__icontains=title_contains_query)
+        wanted_id = qs.filter(id=1000000)
+        print("title search")
         qs = qs.filter(fields__icontains=title_contains_query)
-        print('on')
+        for obj in qs:
+            # print(obj)
+            for a in obj.fields['fields']:
+                # print( a)
+                if a['name'] == 'title':
+                    # print("its title")
+                    # print(a['value'])
+                    if title_contains_query in a['value']:
+                        print(a['value'])
+                        dto = DataTypeObject.objects.filter(id=obj.id)
+                        wanted_id = dto | wanted_id
+                        print("wanted")
+                        print(wanted_id)
+        qs = wanted_id
         print(qs)
-        qs1 = qs.filter(fields__icontains=title_contains_query)
-        print(qs1)
-        qs2 = qs1.filter(community__id__icontains=community_query)
+        ### title filtered.
+
+        # Filter communities of the posts
+        qs2 = qs.filter(community__name__icontains=community_query)
+        print("community filter")
         print(qs2)
         wanted_id = qs2.filter(id=1000000)
+        #Post communities filtered.
 
-        for p in qs:
+        #Filter tags
+        for p in qs2:
             #print(p.fields['fields'][-1]['value'])
             if id_exact_query in p.fields['fields'][-1]['value']:
                 print(p)
-                qs2 = DataTypeObject.objects.filter(id=p.id)
-                wanted_id = qs2 | wanted_id
+                qs3 = DataTypeObject.objects.filter(id=p.id)
+                wanted_id = qs3 | wanted_id
         qs = wanted_id
+        print(qs)
+        #tags filtered.
+
+        #filter fields
+        Fields = Field.objects.filter(name__icontains=field_query)
+        wanted_id = DataTypeObject.objects.filter(id=1000000)
+        for field in Fields:
+            print(field.data_type)
+            dt = DataType.objects.filter(name__icontains = field.data_type)
+
+            for a in dt:
+                dto = qs.filter(data_type = a.id)
+                wanted_id = dto | wanted_id
+        print(wanted_id)
+        qs = wanted_id
+        print(qs)
+        #fields filtered
+
+        ## community filter
+        community = community.filter(name__icontains=community_query)
 
     ## JSONFILTER! filter in jsonField field in DataTypeObject which has the matching TITLE
     elif is_valid_queryparam(title_contains_query):
+        #to be able to create empty qs ? find a better way!
         wanted_id = qs.filter(id=1000000)
         print("title search")
         qs = qs.filter(fields__icontains=title_contains_query)
         for obj in qs:
             #print(obj)
-
             for a in obj.fields['fields']:
                 #print( a)
                 if a['name'] == 'title':
@@ -435,7 +478,6 @@ def asearch(request):
                     #print(a['value'])
                     if title_contains_query in a['value']:
                         print(a['value'])
-                        print("contains bengi")
                         dto = DataTypeObject.objects.filter(id=obj.id)
                         wanted_id = dto | wanted_id
                         print("wanted")

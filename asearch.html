@@ -1,0 +1,265 @@
+
+{% load static %}
+<!doctype html>
+<html lang="en">
+  <head>
+
+    <title>Commonity!</title>
+
+    <style>
+      .bd-placeholder-img {
+        font-size: 1.125rem;
+        text-anchor: middle;
+        -webkit-user-select: none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
+      }
+
+      @media (min-width: 768px) {
+        .bd-placeholder-img-lg {
+          font-size: 3.5rem;
+        }
+      }
+      body {
+      background:gray;
+      }
+      #header{
+      z-index: 1;
+      position: fixed;
+      background-color: #BABAD1;
+      height: 100px;
+      width: 80em;
+      }
+    </style>
+    <!-- Custom styles for this template -->
+    <link href="album.css" rel="stylesheet">
+
+
+
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <title>Filter Form</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+    <link rel="stylesheet" href="{% static 'template.css' %}">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css" integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+    <link rel="canonical" href="https://getbootstrap.com/docs/4.3/examples/album/">
+
+    <!-- Bootstrap core CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css" integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
+
+
+  </head>
+  <body>
+
+    <header>
+
+    <div class="collapse bg-dark" id="navbarHeader">
+     <div class="container">
+       <div class="row">
+         <div class="col-sm-8 col-md-7 py-4">
+           <h4 class="text-white">About</h4>
+           <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+         </div>
+         <div class="col-sm-4 offset-md-1 py-4">
+           <h4 class="text-white">Contact</h4>
+           <ul class="list-unstyled">
+           </ul>
+         </div>
+       </div>
+     </div>
+    </div>
+
+  <nav class="navbar navbar-expand-md navbar-dark fixed-top bg-dark">
+   <a class="navbar-brand" href="{% url 'index' %}">Commonity</a>
+   <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExampleDefault" aria-controls="navbarsExampleDefault" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+   </button>
+
+  <div class="collapse navbar-collapse" id="navbarsExampleDefault">
+    <ul class="navbar-nav mr-auto">
+      <li class="nav-item active">
+        <a class="nav-link" href="#">Home <span class="sr-only">(current)</span></a>
+      </li>
+    </ul>
+  </div>
+  </nav>
+
+</header>
+  <section class="jumbotron text-center" style="background:gray">
+    <div class="container" >
+      <h1 class="jumbotron-heading">Advance Search in Communities, Posts, Tags! </h1>
+      <p>
+      </p>
+    </div>
+  </section>
+
+    <main role="main" class="container">
+      <div class="container" >
+      <h3>Filter Communities, Posts, WikiData API Tags </h3>
+      <form method="GET" action=".">
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Search in Post titles..." />
+                    <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <form method="GET" action=".">
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="search" name="community_query" placeholder="Search in Community names.." />
+                    <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="search" name="id_exact" placeholder="Search Custom or Wiki Data Tags.." />
+                    <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <div class="form-row">
+            <div class="form-group col-12">
+                <div class="input-group">
+                    <input class="form-control py-2 border-right-0 border" type="search" name="field_query" placeholder="Find Fields.." />
+                    <span class="input-group-append">
+                        <div class="input-group-text bg-transparent">
+                            <i class="fa fa-search"></i>
+                        </div>
+                    </span>
+                </div>
+            </div>
+        </div>
+<!--        <div class="form-row">-->
+<!--          <div class="form-group col-md-2 col-lg-2">-->
+<!--            <label for="viewCountMin">Minimum View Count</label>-->
+<!--            <input type="number" min=0 class="form-control" id="viewCountMin" placeholder="0" name="view_count_min">-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-2 col-lg-2">-->
+<!--            <label for="viewCountMax">Maximum View Count</label>-->
+<!--            <input type="number" min=0 class="form-control" id="viewCountMax" placeholder="10000?" name="view_count_max">-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-2 col-lg-2">-->
+<!--            <label for="publishDateMin">Publish date minimum</label>-->
+<!--            <input type="date" class="form-control" id="publishDateMin" name="date_min">-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-2 col-lg-2">-->
+<!--            <label for="publishDateMax">Publish date maximum</label>-->
+<!--            <input type="date" class="form-control" id="publishDateMax" name="date_max">-->
+<!--          </div>-->
+<!--          <div class="form-group col-md-4">-->
+<!--            <label for="category">Category</label>-->
+<!--            <select id="category" class="form-control" name="category">-->
+<!--              <option selected>Choose...</option>-->
+<!--              {% for cat in categories %}-->
+<!--              <option value="{{ cat }}">{{ cat }}</option>-->
+<!--              {% endfor %}-->
+<!--            </select>-->
+<!--          </div>-->
+<!--        </div>-->
+<!--        <div class="form-group">-->
+<!--          <div class="form-check">-->
+<!--            <input class="form-check-input" type="checkbox" id="reviewed" name="reviewed">-->
+<!--            <label class="form-check-label" for="reviewed">-->
+<!--              Reviewed-->
+<!--            </label>-->
+<!--          </div>-->
+<!--        </div>-->
+        <div class="form-group">
+          <div class="form-check">
+            <input class="form-check-input" type="checkbox" id="all_fields" name="all_fields">
+            <label class="form-check-label" for="notReviewed">
+              Combined All Fields Search
+            </label>
+          </div>
+        </div>
+        <button type="submit" class="btn btn-primary">Search</button>
+      </form>
+
+      <hr />
+     </div>
+    <h3>Search Results</h3>
+         <hr />
+      <div class="row">
+
+        <ul>
+          {% for dto in datatypeobjects.all %}
+            <li>
+                <a href="{% url 'specificpost' dto.community.id %}">
+                <p>Post : {{ dto.id }}</p>
+                </a>
+
+
+                {% for a in dto.fields.fields %}
+
+                <p><span>{{ a.name }} : {{ a.value }}</span></p>
+                {% endfor %}
+                <p>Community : {{ dto.community }}</p>
+            </li>
+            <hr />
+          {% endfor %}
+        </ul>
+      </div>
+          {% if post %}
+      {% for a in post %}
+
+       <p><span>{{ post.title }} ___ {{ post.content }}</span></p>
+       {% endfor %}
+          {% endif %}
+
+
+       <div class="row">
+           Communities:
+        <ul>
+          <li>
+       {% for a in community %}
+        <a href="{% url 'specificpost' a.id %}">
+       <p><span>{{ a.name }} ___ {{ a.summary }}</span></p>
+        </a>
+       {% endfor %}
+          </li>
+         <hr />
+        </ul>
+       </div>
+          {% if fields %}
+      {% for f in fields %}
+
+       <p><span>{{ f.name }}</span></p>
+       {% endfor %}
+          {% endif %}
+
+
+       <p><span> </span></p>
+
+
+
+    </main>
+
+
+<script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.min.js" integrity="sha384-JjSmVgyd0p3pXB1rRibZUAYoIIy6OrQ6VrjIEaFf/nJGzIxFDsf4x0xIM+B07jRM" crossorigin="anonymous"></script>
+
+</body>
+
+</html>
+
