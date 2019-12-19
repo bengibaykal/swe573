@@ -420,13 +420,31 @@ def asearch(request):
                 wanted_id = qs2 | wanted_id
         qs = wanted_id
 
-
+    ## JSONFILTER! filter in jsonField field in DataTypeObject which has the matching TITLE
     elif is_valid_queryparam(title_contains_query):
+        wanted_id = qs.filter(id=1000000)
+        print("title search")
         qs = qs.filter(fields__icontains=title_contains_query)
+        for obj in qs:
+            #print(obj)
+
+            for a in obj.fields['fields']:
+                #print( a)
+                if a['name'] == 'title':
+                    #print("its title")
+                    #print(a['value'])
+                    if title_contains_query in a['value']:
+                        print(a['value'])
+                        print("contains bengi")
+                        dto = DataTypeObject.objects.filter(id=obj.id)
+                        wanted_id = dto | wanted_id
+                        print("wanted")
+                        print(wanted_id)
+        qs = wanted_id
         print(qs)
 
-    elif is_valid_queryparam(title_contains_query):
-        post = post.filter(title__icontains=title_contains_query)
+    #elif is_valid_queryparam(title_contains_query):
+        #post = post.filter(title__icontains=title_contains_query)
 
 
     elif is_valid_queryparam(community_query):
@@ -436,7 +454,7 @@ def asearch(request):
         wanted_id = qs.filter(id=1000000)
         print(community)
 
-
+    #collect all objects that contains search query in their texts
     elif is_valid_queryparam(id_exact_query):
         qs = qs.filter(fields__icontains=id_exact_query)
         wanted_id = qs.filter(id = 1000000)
