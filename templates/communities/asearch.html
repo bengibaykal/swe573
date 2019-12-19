@@ -103,7 +103,7 @@
         <div class="form-row">
             <div class="form-group col-12">
                 <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Enter a  post subject.." />
+                    <input class="form-control py-2 border-right-0 border" type="search" name="title_contains" placeholder="Search in Post titles..." />
                     <span class="input-group-append">
                         <div class="input-group-text bg-transparent">
                             <i class="fa fa-search"></i>
@@ -116,7 +116,7 @@
         <div class="form-row">
             <div class="form-group col-12">
                 <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="community_query" placeholder="Search for a community.." />
+                    <input class="form-control py-2 border-right-0 border" type="search" name="community_query" placeholder="Search in Community names.." />
                     <span class="input-group-append">
                         <div class="input-group-text bg-transparent">
                             <i class="fa fa-search"></i>
@@ -128,7 +128,7 @@
         <div class="form-row">
             <div class="form-group col-12">
                 <div class="input-group">
-                    <input class="form-control py-2 border-right-0 border" type="search" name="id_exact" placeholder="Search Custom ot Wiki Data Tags.." />
+                    <input class="form-control py-2 border-right-0 border" type="search" name="id_exact" placeholder="Search Custom or Wiki Data Tags.." />
                     <span class="input-group-append">
                         <div class="input-group-text bg-transparent">
                             <i class="fa fa-search"></i>
@@ -208,12 +208,12 @@
                 <p>Post : {{ dto.id }}</p>
                 </a>
 
-                <p>Community : {{ dto.community }}</p>
+
                 {% for a in dto.fields.fields %}
 
                 <p><span>{{ a.name }} : {{ a.value }}</span></p>
                 {% endfor %}
-
+                <p>Community : {{ dto.community }}</p>
             </li>
             <hr />
           {% endfor %}
