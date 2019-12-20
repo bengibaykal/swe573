@@ -1,3 +1,4 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -74,7 +75,7 @@
 
 <form method = POST enctype="multipart/form-data">
 {% csrf_token %}
-<div class="card text-white bg-primary mb-3" style="max-width: 66rem;">
+<div class="card text-white bg-secondary mb-3" style="max-width: 66rem;">
     {% for DataType in DataType.all %}
  <div class="card-header">Add Fields for the {{DataType}} DataType!</div>
     {%  endfor %}
@@ -174,7 +175,7 @@
             {% elif Field.required == "no" %}
              <input type="text" step=0.01 class="form-control" id="geolocation" aria-describedby="{{Field.name}}"
                 placeholder="Enter {{Field.name}}" name="{{Field.name}}" >
-            <label onclick="getLocation()"  >Click for Auto-fill location</label>
+            <label onclick="getLocation()"  >Click Auto-fill location for the current location.</label>
             {% endif  %}
     {% endif  %}
 
@@ -229,6 +230,9 @@
 
 <button onclick="getLocation()" center >Auto-fill location</button>
 <p id="location"></p>
+
+{% block content %}
+{% endblock %}
 
 <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.7/umd/popper.min.js" integrity="sha384-UO2eT0CpHqdSJQ6hJty5KVphtPhzWj9WO1clHTMGa3JDZwrnQq4sF86dIHNDz0W1" crossorigin="anonymous"></script>

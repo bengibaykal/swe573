@@ -133,8 +133,34 @@
           <div class="card mb-4 shadow-sm">
 
            {% for a in f.fields.fields %}
-            <text><center>{{ a.name }} : {{ a.value }}  </center></text>
+
+             {% if a.tagname %}
+
+              {% if a.Qvalue %}
+              <a type="button" href="https://www.wikidata.org/wiki/{{a.Qvalue}}" >
+
+                <span class="badge badge-pill badge-primary">{{ a.tagname }}
+                <span class="badge badge-light">Wiki</span>
+                </span>
+                   </a>
+
+              {% else %}
+
+              <a type="button" href="" class="btn btn-outline-info btn-sm" >
+
+                  <span class="badge badge-pill badge-success"><center>{{ a.tagname }}</center></span>
+              </a>
+
+              {% endif %}
+
+             {% else %}
+
+              <text><center>{{ a.name }} : {{ a.value }}  </center></text>
+
+             {% endif %}
               {% endfor  %}
+
+
 
 
             <div class="card-body">
