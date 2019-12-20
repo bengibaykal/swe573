@@ -39,7 +39,10 @@ def specificpost(request, communityId):
     #data = [x for x in data if x['communityId'] == communityId]
     #print(data)
     dto = DataTypeObject.objects.filter( community = community )
+
     print(dto)
+
+
 
     return render(request, 'communities/specificpost.html', { 'communityId': communityId , 'community': community , 'dto' : dto })
 
@@ -144,6 +147,7 @@ def data_type_creation(request, communityId):
 
 
         DataType1.community = Community.objects.get(id=communityId)
+        print(communityId)
         DataType1.name = query['datatypename']
         DataType1.extra_fields = {}
         DataType1.save()
@@ -218,6 +222,9 @@ def datatypefields(request, datatypeId):
                   }
 
           f['fields'].append(myDict)
+        del f['fields'][-1]
+        print("tagsilindimi")
+        print(f)
 
         tagname = request.POST['tags']
         print(tagname)
@@ -227,20 +234,26 @@ def datatypefields(request, datatypeId):
         #TODO:tagler ayrı yazılacaksa searchte de burada aranmalı
         #tags= {}
         #tags['tags'] = []
-        #for tagpair in tagname:
-        #  if ':' in tagpair:
-        #    m = tagpair.index(':')
-        #    l = tagpair[:m]
-        #    q = tagpair[m:]
-        #    print(l)
-        #    print(q)
-        #
-        #    tags1 = { 'tagname' :  l,
-        #            'Qvalue'   : q
-        #              }
-        #    tags['tags'].append(tags1)
-        #f['fields'].append(tags)
-        #print(f)
+        for tagpair in tagname:
+          if ':' in tagpair:
+            m = tagpair.index(':')
+            l = tagpair[:m]
+            q = tagpair[m+1:]
+            print(l)
+            print(q)
+
+            tags1 = { 'tagname' :  l,
+                    'Qvalue'   : q
+                      }
+            #tags['tags'].append(tags1)
+            f['fields'].append(tags1)
+          else:
+                tags1 = {'tagname': tagpair,
+                        'Qvalue': ""
+                        }
+                f['fields'].append(tags1)
+        print(f)
+
 
         DataTypeObject1.fields = f
         DataTypeObject1.save()
@@ -395,95 +408,170 @@ def asearch(request):
     id_exact_query = request.GET.get('id_exact')
     field_query = request.GET.get('field_query')
     all_fields = request.GET.get('all_fields')
+    startswith = request.GET.get('startswith')
+    contains = request.GET.get('contains')
+    exactmatch = request.GET.get('exactmatch')
 
-    title_or_desc_query = request.GET.get('title_or_author')
-    view_count_min = request.GET.get('view_count_min')
-    view_count_max = request.GET.get('view_count_max')
-    date_min = request.GET.get('date_min')
-    date_max = request.GET.get('date_max')
     print (all_fields)
 
     ## advanced combined search
+
     if all_fields == 'on':
         # Filter post titles
         #qs = qs.filter(fields__icontains=title_contains_query)
         wanted_id = qs.filter(id=1000000)
         print("title search")
-        qs = qs.filter(fields__icontains=title_contains_query)
-        for obj in qs:
-            # print(obj)
-            for a in obj.fields['fields']:
-                # print( a)
-                if a['name'] == 'title':
-                    # print("its title")
-                    # print(a['value'])
-                    if title_contains_query in a['value']:
-                        print(a['value'])
-                        dto = DataTypeObject.objects.filter(id=obj.id)
-                        wanted_id = dto | wanted_id
-                        print("wanted")
-                        print(wanted_id)
-        qs = wanted_id
-        print(qs)
-        ### title filtered.
+        qs = qs.filter(fields__icontains=title_contains_query or None)
+        if len(qs) > 0:
+            for obj in qs:
+                print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            # print("its title")
+                            # print(a['value'])
+                            if title_contains_query in a['value']:
+                                print(a['value'])
+                                dto = DataTypeObject.objects.filter(id=obj.id)
+                                wanted_id = dto | wanted_id
+                                print("wanted")
+                                print(wanted_id)
+                        else:
+                            message = "enter another value"
+                            print(message)
 
-        # Filter communities of the posts
-        qs2 = qs.filter(community__name__icontains=community_query)
-        print("community filter")
-        print(qs2)
-        wanted_id = qs2.filter(id=1000000)
-        #Post communities filtered.
 
-        #Filter tags
-        for p in qs2:
-            #print(p.fields['fields'][-1]['value'])
-            if id_exact_query in p.fields['fields'][-1]['value']:
-                print(p)
-                qs3 = DataTypeObject.objects.filter(id=p.id)
-                wanted_id = qs3 | wanted_id
-        qs = wanted_id
-        print(qs)
-        #tags filtered.
+            qs = wanted_id
+            print(qs)
+            ### title filtered.
 
-        #filter fields
-        Fields = Field.objects.filter(name__icontains=field_query)
-        wanted_id = DataTypeObject.objects.filter(id=1000000)
-        for field in Fields:
-            print(field.data_type)
-            dt = DataType.objects.filter(name__icontains = field.data_type)
+            # Filter communities of the posts
+            qs2 = qs.filter(community__name__icontains=community_query)
+            print("community filter")
+            print(qs2)
+            wanted_id = qs2.filter(id=1000000)
+            #Post communities filtered.
 
-            for a in dt:
-                dto = qs.filter(data_type = a.id)
-                wanted_id = dto | wanted_id
-        print(wanted_id)
-        qs = wanted_id
-        print(qs)
-        #fields filtered
+            #Filter tags
+            for p in qs2:
+                #print(p.fields['fields'][-1]['value'])
+                if id_exact_query in p.fields['fields'][-1]['value']:
+                    print(p)
+                    qs3 = DataTypeObject.objects.filter(id=p.id)
+                    wanted_id = qs3 | wanted_id
+            qs = wanted_id
+            print(qs)
+            #tags filtered.
 
-        ## community filter
-        community = community.filter(name__icontains=community_query)
+            #filter fields
+            Fields = Field.objects.filter(name__icontains=field_query)
+            wanted_id = DataTypeObject.objects.filter(id=1000000)
+            for field in Fields:
+                print(field.data_type)
+                dt = DataType.objects.filter(name__icontains = field.data_type)
+
+                for a in dt:
+                    dto = qs.filter(data_type = a.id)
+                    wanted_id = dto | wanted_id
+            print(wanted_id)
+            qs = wanted_id
+            print(qs)
+            #fields filtered
+
+            ## community filter
+            community = community.filter(name__icontains=community_query)
+        else:
+            Warning("There is no matching object.")
+
 
     ## JSONFILTER! filter in jsonField field in DataTypeObject which has the matching TITLE
     elif is_valid_queryparam(title_contains_query):
-        #to be able to create empty qs ? find a better way!
-        wanted_id = qs.filter(id=1000000)
-        print("title search")
-        qs = qs.filter(fields__icontains=title_contains_query)
-        for obj in qs:
-            #print(obj)
-            for a in obj.fields['fields']:
-                #print( a)
-                if a['name'] == 'title':
-                    #print("its title")
-                    #print(a['value'])
-                    if title_contains_query in a['value']:
-                        print(a['value'])
-                        dto = DataTypeObject.objects.filter(id=obj.id)
-                        wanted_id = dto | wanted_id
-                        print("wanted")
-                        print(wanted_id)
-        qs = wanted_id
-        print(qs)
+        if contains == 'on':
+            #to be able to create empty qs ? find a better way!
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                #print(obj)
+                for a in obj.fields['fields']:
+                    #print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            #print("its title")
+                            #print(a['value'])
+                            if title_contains_query in a['value']:
+
+                                dto = DataTypeObject.objects.filter(id=obj.id)
+                                wanted_id = dto | wanted_id
+                                print("wanted")
+                                print(wanted_id)
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+        elif startswith == 'on':
+            # to be able to create empty qs ? find a better way!
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                # print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            s = len(title_contains_query)
+                            o = len(a['value'])
+                            if o >= s:
+                                if title_contains_query in a['value'][:s]:
+                                    dto = DataTypeObject.objects.filter(id=obj.id)
+                                    wanted_id = dto | wanted_id
+                                    print("wanted")
+                                    print(wanted_id)
+                            else:
+                                message = "Try with a shorter text"
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+
+        elif exactmatch == 'on':
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                # print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            s = len(title_contains_query)
+                            o = len(a['value'])
+                            if o >= s:
+                                if title_contains_query == a['value']:
+                                    dto = DataTypeObject.objects.filter(id=obj.id)
+                                    wanted_id = dto | wanted_id
+                                    print("wanted")
+                                    print(wanted_id)
+                            else:
+                                message = "Try with a shorter text"
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+
+
+        #else:
+        #    print(q)
+
+
 
     #elif is_valid_queryparam(title_contains_query):
         #post = post.filter(title__icontains=title_contains_query)
@@ -496,19 +584,24 @@ def asearch(request):
         wanted_id = qs.filter(id=1000000)
         print(community)
 
+    #TODO: Update tag search
     #collect all objects that contains search query in their texts
     elif is_valid_queryparam(id_exact_query):
         qs = qs.filter(fields__icontains=id_exact_query)
         wanted_id = qs.filter(id = 1000000)
-        for p in qs:
-            #print(p.fields['fields'][-1]['value'])
-            if id_exact_query in p.fields['fields'][-1]['value']:
-               print(p)
-               qs = DataTypeObject.objects.filter(id = p.id)
-               wanted_id = qs | wanted_id
-            qs = wanted_id
+        #for p in qs:
+        #    if 'fields' in p.fields.keys():
+                #print(p.fields['fields'][-1]['value'])
+        #        if 'tagname' in p.fields['fields']:
+         #           print(p.fields.tagname)
 
-            print(wanted_id)
+          #          qs = DataTypeObject.objects.filter(id = p.id)
+           #        wanted_id = qs | wanted_id
+            #        qs = wanted_id
+
+             #   print(wanted_id)
+         ##   else:
+           #     message = "There is no tag."
 
     elif is_valid_queryparam(field_query):
         qs = Field.objects.filter(name__icontains=field_query)
