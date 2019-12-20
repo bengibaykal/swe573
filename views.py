@@ -270,7 +270,9 @@ def datatypefields(request, datatypeId):
 def field_creation(request, communityId, datatypeId):
     #field = DataType.objects.get(id=2)
     #field_extra = field['extra_fields']
-
+    Community1 = Community.objects.get(id=communityId)
+    DT1 = DataType.objects.get(id=datatypeId)
+    Fields = Field.objects.filter(data_type = DT1)
     if request.method == "POST":
 
         #datatypeform = DataTypeForm(request.POST)
@@ -292,7 +294,7 @@ def field_creation(request, communityId, datatypeId):
     else:
         form = FieldForm()
     return render(request, 'communities/test.html',
-                  {'form': form, 'communityId': communityId, 'datatypeId': datatypeId})
+                  {'form': form, 'communityId': communityId, 'datatypeId': datatypeId, 'community': Community1 , 'datatype': DT1 , 'Fields': Fields})
 
 #TODO:Not using field creation2
 def field_creation2(request, communityId, datatypeId):
@@ -411,6 +413,7 @@ def asearch(request):
     startswith = request.GET.get('startswith')
     contains = request.GET.get('contains')
     exactmatch = request.GET.get('exactmatch')
+    Qcode_exact = request.GET.get('Qcode_exact')
 
     print (all_fields)
 
@@ -589,19 +592,40 @@ def asearch(request):
     elif is_valid_queryparam(id_exact_query):
         qs = qs.filter(fields__icontains=id_exact_query)
         wanted_id = qs.filter(id = 1000000)
-        #for p in qs:
-        #    if 'fields' in p.fields.keys():
-                #print(p.fields['fields'][-1]['value'])
-        #        if 'tagname' in p.fields['fields']:
-         #           print(p.fields.tagname)
+        for p in qs:
+            if 'fields' in p.fields.keys():
+                print(p.fields['fields'])
+                #print(p.fields.keys())
+                for obj in p.fields['fields']:
+                    if 'tagname' in obj:
+                        print("tagname")
+                        print(obj['tagname'])
+                        if id_exact_query in obj['tagname']:
+                             qs = DataTypeObject.objects.filter(id = p.id)
+                             wanted_id = qs | wanted_id
+                qs = wanted_id
 
-          #          qs = DataTypeObject.objects.filter(id = p.id)
-           #        wanted_id = qs | wanted_id
-            #        qs = wanted_id
+            else:
+                message = "There is no tag."
 
-             #   print(wanted_id)
-         ##   else:
-           #     message = "There is no tag."
+    elif is_valid_queryparam(Qcode_exact):
+        qs = qs.filter(fields__icontains=Qcode_exact)
+        wanted_id = qs.filter(id=1000000)
+        for p in qs:
+            if 'fields' in p.fields.keys():
+                print(p.fields['fields'])
+                # print(p.fields.keys())
+                for obj in p.fields['fields']:
+                    if 'Qvalue' in obj:
+                        print("Qvalue")
+                        print(obj['Qvalue'])
+                        if Qcode_exact == obj['Qvalue']:
+                            qs = DataTypeObject.objects.filter(id=p.id)
+                            wanted_id = qs | wanted_id
+                qs = wanted_id
+
+            else:
+                message = "There is no tag."
 
     elif is_valid_queryparam(field_query):
         qs = Field.objects.filter(name__icontains=field_query)
