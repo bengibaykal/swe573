@@ -1,8 +1,11 @@
 from django.urls import path
 
 from .import views
-from .views import post_new, post_edit, post_detail, post_list, specificpost , jsonform, newcommunity
+from .views import post_new, post_edit, post_detail, post_list, specificpost , jsonform, newcommunity, index
+
 from django.urls import include
+from django.contrib.auth import views as auth_views
+
 
 from .views import TestDashboardView
 
@@ -10,12 +13,12 @@ from .views import TestDashboardView
 #import the same level files
 
 urlpatterns = [
-    path('',views.index,name = "index"),
+    path('', views.index, name = "index"),
     path('allposts/<int:communityId>', views.specificpost, name='specificpost'),
     path('post/new/<int:communityId>', post_new, name='post_new'),
     path('onepost/<int:id>', views.onepost, name='onepost'),
     path('jsonform/', views.jsonform, name='jsonform'),
-    path('newcommunity/' , newcommunity, name='newcommunity'),
+    path('newcommunity/', newcommunity, name='newcommunity'),
     path('search/?search=<searchtext>', views.search , name='search'),
 
     path('home', views.home, name='home'),
@@ -23,11 +26,21 @@ urlpatterns = [
 
 
     path('datatype/new/<int:communityId>', views.data_type_creation, name='newdatatype'),
+
     path('field/new/<int:communityId>/<int:datatypeId>', views.field_creation, name='test'),
 
     path('post/<int:id>/edit/', views.post_edit, name='post_edit'),
     path('datatypelist/<int:id>', views.datatype_list, name='datatype_list'),
-    path('postform/new/<int:communityId>/<int:datatypeId>',views.post_form_creation,name='postformcreation'),
+
+    #TODO:iptal postform
+    #path('postform/new/<int:communityId>/<int:datatypeId>',views.post_form_creation,name='postformcreation'),
+
+    path('datatypefields/<int:datatypeId>', views.datatypefields, name='datatypefields'),
+    path('addTag/', views.addTag, name='addTag'),
+    path('search/', views.asearch, name='asearch'),
+    path('register/', views.register, name='register'),
+    path('login/', auth_views.LoginView.as_view(template_name='communities/login.html'), name='login'),
+    path('logout/', auth_views.LogoutView.as_view(template_name='communities/logout.html'), name='logout'),
 
 
     path('<int:Community_id>',views.detail,name = "detail"),

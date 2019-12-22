@@ -2,11 +2,23 @@ import json
 import django
 import django_jsonforms
 from django import forms
+
+from django.contrib.auth.models import User
+from django.contrib.auth.forms import UserCreationForm
+
 from django.forms import ModelForm, Form
 from django_jsonforms.forms import JSONSchemaField
 from django.contrib.postgres.fields import JSONField
 
 from .models import Post2, Community, DataType, DataTypeObject, Field
+
+class UserRegisterForm(UserCreationForm):
+    email = forms.EmailField()
+
+    class Meta:
+        model = User
+        fields = ['username', 'email', 'password1', 'password2']
+
 
 class PostForm(forms.ModelForm):
 
@@ -46,8 +58,18 @@ class CustomForm(forms.Form):
         "properties": {
             "Data Type Type": {
                 "type": "string",
-                "enum": ["Sting", "Boolean", "Integer"],
+                "enum": ["Sting", "Text", "Integer", "Image", "Decimal Number", "Color"],
                 "maxLength": 30,
+            }
+        }
+    }
+
+    enumarated = {
+        "type": "object",
+        "required": ["enumarated"],
+        "properties": {
+            "Data Type Type": {
+                "type": "boolean",
             }
         }
     }
@@ -78,6 +100,13 @@ class CustomForm(forms.Form):
             "is required": {
                 "type": "string",
                 "enum": ["True", "False"]
+
+            },
+            "enumarated": {
+                "type": "string",
+                "enum": ["True"
+
+                        , "False"]
 
             }
 
@@ -110,9 +139,26 @@ class DataTypeForm2(forms.ModelForm):
 
 class FieldForm(forms.ModelForm):
 
+    #fi = {'name':'bengi', 'field_type':'string'}
+
     class Meta:
         model = Field
-        fields = ('name', 'field_type', 'required', 'community', 'data_type')
+        fields = ('name', 'field_type', 'required')
+    #name = forms.CharField(required=True)
+    #field_type = forms.CharField(widget=forms.Select( required=True)
+    #required = forms.BooleanField(required=True)
+    #community = forms.CharField(required=True)
+    #data_type = forms.CharField(required=True)
+
+    #def save(self):
+        #Field = self.instance
+        #Field.name = self.cleaned_data['name']
+        #Field.field_type = self.cleaned_data['field_type']
+        #Field.required = self.cleaned_data['required']
+        #Field.community = self.cleaned_data['community']
+        #Field.data_type = self.cleaned_data['data_type']
+
+
 
 class PostTypeForm(forms.Form):
 

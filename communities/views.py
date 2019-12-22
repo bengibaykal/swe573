@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render, get_object_or_404, HttpResponse
 from django.views.generic.base import TemplateView
 from django.core import serializers
@@ -6,6 +7,7 @@ from django.http import HttpResponse
 from django.http import JsonResponse
 from django.shortcuts import render
 from .models import Community, Post2, DataTypeObject, DataType, Field
+from django.core.serializers import serialize
 
 from .forms import PostForm, CommunityForm, CustomForm, DataTypeForm, FieldForm, PostTypeForm
 from django.shortcuts import redirect
@@ -14,35 +16,62 @@ import requests
 import json
 import userdefinedfields
 from .serializers import FieldSerializer
+from django.core.serializers.json import DjangoJSONEncoder
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib import messages
+from django.contrib.auth.decorators import login_required
+
+from .forms import CustomForm, UserRegisterForm
+
+class LazyEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, json):
+            return str(obj)
+        return super().default(obj)
 
 
-from .forms import CustomForm
+def register(request):
+    if request.method == 'POST':
+        form = UserRegisterForm(request.POST)
+        if form.is_valid():
+            form.save()
+            username = form.cleaned_data.get('username')
+            messages.success(request, f'Your account has been created! You are now able to login!')
+            return redirect('login')
+    else:
+        form = UserRegisterForm()
+    return render(request, 'communities/register.html' , {'form' : form})
+
+
 
 def index(request):
     communities = Community.objects
     return render(request,'communities/index.html', {'communities': communities})
 
+@login_required
 def specificpost(request, communityId):
     community = Community.objects.get(id=communityId)
-    URL = "http://127.0.0.1:8000/api/post/list"
-    response = requests.get(URL)
-    data = response.json()
-    #idcom = response.json()[0]["communityId"]
-    #idcom = json.dumps(idcom)
-    #idcom = json.loads(idcom)
-    data = [x for x in data if x['communityId'] == communityId]
-    print(data)
-    return render(request, 'communities/specificpost.html', {'data': data, 'communityId': communityId , 'community': community})
+    #URL = "http://127.0.0.1:8000/api/post/list"
+    #response = requests.get(URL)
+    #data = response.json()
+    #data = [x for x in data if x['communityId'] == communityId]
+    #print(data)
+    dto = DataTypeObject.objects.filter( community = community )
 
+    print(dto)
+    return render(request, 'communities/specificpost.html', { 'communityId': communityId , 'community': community , 'dto' : dto })
+
+
+#TODO: sil
 def onepost(request, id):
-    URL = "http://127.0.0.1:8000/api/post/list"
-    response = requests.get(URL)
-    data = response.json()
-    data = [x for x in data if x['id'] == id]
-    print(data)
-    return render(request, 'communities/onepost.html', {'data': data, 'id':id})
+    #URL = "http://127.0.0.1:8000/api/post/list"
+    #response = requests.get(URL)
+    #data = response.json()
+    #data = [x for x in data if x['id'] == id]
+    #print(data)
+    return render(request, 'communities/onepost.html', {'id':id})
 
-
+@login_required
 def post_new(request, communityId):
     if request.method == "POST":
         form = PostForm(request.POST)
@@ -60,57 +89,36 @@ def post_new(request, communityId):
 
 def jsonform(request):
     if request.method == "POST":
-        query = CustomForm(request.POST)
-        if query.is_valid():
-            print('--------------------------')
-            # With this line, it transforms the form from HTML to JsonSchema
-            cleaned_query = query.cleaned_data['data_type']
-            print(cleaned_query)
-            data_type_object = DataType()
-            community = Community.objects.get(name='Universe')
-            data_type_object.community = community
+        print(request.POST)
 
-            data_type_object.name = cleaned_query['Data Field Name']
-            data_type_object.extra_fields = cleaned_query['Data Field Type']
-            if cleaned_query['is required'] == "True":
-                data_type_object.required = True
-            else:
-                data_type_object.required = False
-            data_type_object.save()
+    return render(request, 'communities/jsonform.html', {'form': CustomForm()})
 
-            return print('success')
-        else:
-            form = CustomForm()
-    else:
-        print("else run")
 
-    return render(request, 'communities/jsonform.html', {'form': CustomForm})
-
-#TODO: Adding files will be corrected. Add media, image files should be corrected.
+#DONE
+@login_required
 def newcommunity(request):
     if request.method == "POST":
-        form = CommunityForm(request.POST )
+        form = CommunityForm(request.POST or None, request.FILES or None)
         if form.is_valid():
             community = form.save(commit=False)
-            #if 'image' in request.FILES:
-                #community.picture = request.FILES['image']
-
+            if 'image' in request.FILES:
+                community.image = request.FILES['image']
             community.save()
-            print(community)
+
             return redirect('index')
     else:
         form = CommunityForm()
     return render(request, 'communities/newcommunity.html', {'form': form})
 
-#TODO:community search
+#TODO: normal search yap
 def search(request, searchtext):
 
-        URL = "http://127.0.0.1:8000/api/post/community?search={}".format(searchtext)
-        response = requests.get(URL)
-        data = response.json()
+        #URL = "http://127.0.0.1:8000/api/post/community?search={}".format(searchtext)
+        #response = requests.get(URL)
+        #data = response.json()
 
-        print(data)
-        return render(request, 'communities/onepost.html', {'data': data, 'id': id})
+        #print(data)
+        return render(request, 'communities/onepost.html', )
 
 
 class TestDashboardView(TemplateView):
@@ -119,7 +127,7 @@ class TestDashboardView(TemplateView):
 ########
 
 
-
+@login_required
 def detail(request, Community_id):
     Community_detail = get_object_or_404( Community, pk=Community_id)
     post = Post.objects
@@ -127,61 +135,249 @@ def detail(request, Community_id):
     Communities = Community.objects
     return render(request, 'communities/detail.html',  {'community': Community_detail,'post': post, 'Communities': Communities})
 
-
+@login_required
 def data_type_creation(request, communityId):
 
-    if request.method == "POST":
+    # if request.method == "POST":
+    #     form = DataTypeForm(request.POST)
+    #     if form.is_valid():
+    #         post = form.save(commit=False)
+    #         post.communityId = Community.objects.get(id = communityId)
+    #         post.save()
+    #         print(post)
+    #         return redirect('index')
+    # else:
+    #     form = DataTypeForm()
+    # return render(request, 'communities/newdatatype.html', {'form': form, 'communityId': communityId})
+    community = Community.objects.get(id=communityId)
+    DataType1 = DataType()
 
-        form = DataTypeForm(request.POST)
+    if (request.method == "POST"):
 
-        if form.is_valid():
-            post = form.save(commit=False)
-            post.communityId = Community.objects.get(id = communityId)
-            post.save()
-            print(post)
-            return redirect('index')
-    else:
-        form = DataTypeForm()
-    return render(request, 'communities/newdatatype.html', {'form': form, 'communityId': communityId})
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
 
+        print(query['datatypename'])
+
+
+        DataType1.community = Community.objects.get(id=communityId)
+        print(communityId)
+        DataType1.name = query['datatypename']
+        DataType1.extra_fields = {}
+        DataType1.save()
+        print(DataType1.extra_fields)
+
+    return render(request, 'communities/newdatatype.html', {'DataType': DataType1 , 'dto': DataType1 ,  'communityId': communityId , 'community': community } )
+
+@login_required
+def datatypefields(request, datatypeId):
+    myDict = {}
+
+    f = {}
+    #DataType1 = get_object_or_404(DataType, pk=datatypeId)
+    DataType1 = DataType.objects.filter(id=datatypeId)
+    community2 = DataType.objects.get(id=datatypeId).community
+
+    #print(community2)
+
+    community = Community.objects.get(id = community2)
+    datatype = DataType.objects.get(id = datatypeId)
+    #print(community)
+
+    print(DataType1)
+    #DataType.objects.all()
+    Field1 = Field.objects.filter(data_type=datatypeId)
+
+
+    DataTypeObject1 = DataTypeObject()
+    DataTypeObject1.community = community
+    DataTypeObject1.data_type = datatype
+
+
+    #print(DataTypeObject1)
+    if (request.method == "POST"):
+        myDict = {}
+        #geolocation = request.POST.get('geolocation')
+        #name = request.POST.get('name')
+        #if geolocation != "":
+        #    myDict = {'name': "geolocation",
+        #              'value': request.POST['geolocation'],
+        #              }
+        #elif geolocation == "":
+        #    print("Girmedi")
+        #elif name != "":
+        #    myDict = {'name': "name",
+        #              'value': request.POST['name'],
+        #              }
+        #else:
+        #    print("hiç girmedi")
+        #
+        #print(myDict)
+
+        # saves as key:value pairs but does not work so changed as below
+        #for key in queryDict:
+        #    myDict[key] = request.POST[key]
+        #print(myDict)
+        # DataTypeObject1.save()
+        # print(DataTypeObject1)
+
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
+        queryDict = query.keys()
+
+
+        f = {}
+        f['fields'] = []
+        for key in queryDict:
+          myDict= {  'name':  key,
+                   'value' :   request.POST[key]
+                  }
+
+          f['fields'].append(myDict)
+        del f['fields'][-1]
+        print("tagsilindimi")
+        print(f)
+
+        tagname = request.POST['tags']
+        print(tagname)
+        tagname = tagname.split(',')
+        print(tagname)
+
+        #TODO:tagler ayrı yazılacaksa searchte de burada aranmalı
+        #tags= {}
+        #tags['tags'] = []
+        for tagpair in tagname:
+          if ':' in tagpair:
+            m = tagpair.index(':')
+            l = tagpair[:m]
+            q = tagpair[m+1:]
+            print(l)
+            print(q)
+
+            tags1 = { 'tagname' :  l,
+                    'Qvalue'   : q
+                      }
+            #tags['tags'].append(tags1)
+            f['fields'].append(tags1)
+          else:
+                tags1 = {'tagname': tagpair,
+                        'Qvalue': ""
+                        }
+                f['fields'].append(tags1)
+        print(f)
+
+
+        DataTypeObject1.fields = f
+        DataTypeObject1.save()
+        print(DataTypeObject1)
+
+        #value = myDict.values()
+
+    return render(request, 'communities/datatypefields.html',
+                  { 'DataType': DataType1, 'Field': Field1, 'Allfields': myDict , 'fields': f })
+
+
+
+@login_required
 def field_creation(request, communityId, datatypeId):
-
+    #field = DataType.objects.get(id=2)
+    #field_extra = field['extra_fields']
+    Community1 = Community.objects.get(id=communityId)
+    DT1 = DataType.objects.get(id=datatypeId)
+    Fields = Field.objects.filter(data_type = DT1)
     if request.method == "POST":
+
         #datatypeform = DataTypeForm(request.POST)
         form = FieldForm(request.POST)
+        print(request.POST)
         if form.is_valid():
             post = form.save(commit=False)
-            #post.community = Community.objects.get(id = communityId)
-            #post.data_type = DataType.objects.get(id = datatypeId)
-            print(post)
+            Community1 = Community.objects.get(id = communityId)
+            DT1 = DataType.objects.get(id = datatypeId)
+            post.community = Community1
+            post.data_type = DT1
+            #post.required = request.POST.required
+            #print(post.required)
+
             post.save()
+            print(post.name)
 
-            Datatype1 = DataType()
-            #DataType1 = DataType.objects.get(id = post.data_type)
-            #data  = FieldSerializer(post).data
-            #print(data)
-            #data2 = JsonResponse(data)
-            #print(data2)
-            URL = "http://127.0.0.1:8000/api/post/field/2"
-            response = requests.get(URL)
-            data2 = response.json()
-            #print(data2)
-            community = Community.objects.get(id=communityId)
-            com = Community()
-            print(community.id)
-            datatype = DataType.objects.get(id=datatypeId)
-            data = [x for x in data2 if ( x['data_type'] == 15 and x['community'] == community.id)]
-            print(data)
-            #Datatype1 = DataType1.objects.get(id = datatypeId)
-
-            Datatype1.community = community
-            Datatype1.extra_fields = data
-            Datatype1.save()
             return redirect('index')
     else:
         form = FieldForm()
-    return render(request, 'communities/test.html', {'form': form, 'communityId': communityId, 'datatypeId': datatypeId })
+    return render(request, 'communities/test.html',
+                  {'form': form, 'communityId': communityId, 'datatypeId': datatypeId, 'community': Community1 , 'datatype': DT1 , 'Fields': Fields})
 
+#TODO:Not using field creation2
+def field_creation2(request, communityId, datatypeId):
+    myDict = {}
+    Community1 = Community.objects.get(id=communityId)
+    DT1 = DataType.objects.get(id=datatypeId)
+
+    if (request.method == "POST"):
+        query = request.POST
+        _mutable = query._mutable
+        query._mutable = True
+        del query['csrfmiddlewaretoken']
+        query._mutable = False
+
+        print(query)
+        queryDict = query.keys()
+
+#######################################
+        f = {}
+        f['extra_fields'] = []
+        for key in queryDict:
+          myDict= {  key, request.POST[key] }
+          print(myDict)
+
+          f['fields'].append(myDict)
+        #DataTypeObject1.fields = f
+        #DataTypeObject1.save()
+        #print(DataTypeObject1)
+
+        print(queryDict2)
+        myDict = {}
+        for key in queryDict:
+            myDict[key] = request.POST[key]
+        myDict['community'] = communityId
+        myDict['data_type'] = datatypeId
+        print(myDict)
+
+        #DT1.save()
+
+    return render(request, 'communities/test.html',  {'DT': DT1, 'Allfields': myDict})
+
+@login_required
+def addTag(request):
+    r_json = {}
+    if request.POST:
+        API_ENDPOINT = "https://www.wikidata.org/w/api.php"
+        query = request.POST['tags2']
+        query.replace(" ", "&")
+
+
+        params = {
+            'action': 'wbsearchentities',
+            'format': 'json',
+            'language': 'en',
+            'limit': '20',
+            'search': query
+        }
+        wiki_request = requests.get(API_ENDPOINT, params=params)
+        r_json = wiki_request.json()['search']
+        r_json = json.dumps(r_json)
+        r_json = json.loads(r_json)
+        print(r_json)
+    return render(request, 'communities/addTag.html', {'r_json': r_json})
+
+@login_required
 def post_edit(request, id):
     post = get_object_or_404(Post2, id=id)
     if request.method == "POST":
@@ -195,6 +391,7 @@ def post_edit(request, id):
         form = PostForm(instance=post)
     return render(request, 'communities/post_edit.html', {'form': form})
 
+@login_required
 def datatype_list(request, id):
     datatypes = DataType.objects.filter(community = id)
     #extra_field = json.loads(datatypes.extra_fields)
@@ -202,29 +399,277 @@ def datatype_list(request, id):
     print(datatypes)
     return render(request, 'communities/datatype_list.html', {'datatypes': datatypes , 'community':community})
 
-#TODO: Create JSON Based Form Entry
+#TODO: Delete
 def post_form_creation(request, communityId, datatypeId):
-    form = PostTypeForm(request.POST)
-    post = form
-    post.modified_by = request.user
-    post.communityId = Community.objects.get(id=communityId)
+    #form = PostTypeForm(request.POST)
+    #post = form
+    #post.modified_by = request.user
+    #post.communityId = Community.objects.get(id=communityId)
     #print(post)
-    community = Community.objects.get(id=communityId)
-    datatype = DataType.objects.get(id=datatypeId)
-    extrafields = datatype.extra_fields
-    name = extrafields['name']
-    print(name)
-    return render(request, 'communities/postformcreation.html', { 'form': form, 'community': community, 'datatype': datatype, 'name':name})
+    #community = Community.objects.get(id=communityId)
+    #datatype = DataType.objects.get(id=datatypeId)
+    #extrafields = datatype.extra_fields
+    #name = extrafields['name']
+    #print(name)
+    return render(request, 'communities/postformcreation.html', { })
 
+# search helper function
+def is_valid_queryparam(param):
+    return param != '' and param is not None
+
+@login_required
+def asearch(request):
+    community = Community.objects.all()
+    post = Post2.objects.all()
+    qs = DataTypeObject.objects.all()
+    tags = DataTypeObject.objects.all()
+    print(request.GET)
+    print(community)
+
+    title_contains_query = request.GET.get('title_contains')
+    community_query = request.GET.get('community_query')
+    id_exact_query = request.GET.get('id_exact')
+    field_query = request.GET.get('field_query')
+    all_fields = request.GET.get('all_fields')
+    startswith = request.GET.get('startswith')
+    contains = request.GET.get('contains')
+    exactmatch = request.GET.get('exactmatch')
+    Qcode_exact = request.GET.get('Qcode_exact')
+
+    print (all_fields)
+
+    ## advanced combined search
+
+    if all_fields == 'on':
+        # Filter post titles
+        #qs = qs.filter(fields__icontains=title_contains_query)
+        wanted_id = qs.filter(id=1000000)
+        print("title search")
+        qs = qs.filter(fields__icontains=title_contains_query or None)
+        if len(qs) > 0:
+            for obj in qs:
+                print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            # print("its title")
+                            # print(a['value'])
+                            if title_contains_query in a['value']:
+                                print(a['value'])
+                                dto = DataTypeObject.objects.filter(id=obj.id)
+                                wanted_id = dto | wanted_id
+                                print("wanted")
+                                print(wanted_id)
+                        else:
+                            message = "enter another value"
+                            print(message)
+
+
+            qs = wanted_id
+            print(qs)
+            ### title filtered.
+
+            # Filter communities of the posts
+            qs2 = qs.filter(community__name__icontains=community_query)
+            print("community filter")
+            print(qs2)
+            wanted_id = qs2.filter(id=1000000)
+            #Post communities filtered.
+
+            #Filter tags
+            for p in qs2:
+                #print(p.fields['fields'][-1]['value'])
+                if id_exact_query in p.fields['fields'][-1]['value']:
+                    print(p)
+                    qs3 = DataTypeObject.objects.filter(id=p.id)
+                    wanted_id = qs3 | wanted_id
+            qs = wanted_id
+            print(qs)
+            #tags filtered.
+
+            #filter fields
+            Fields = Field.objects.filter(name__icontains=field_query)
+            wanted_id = DataTypeObject.objects.filter(id=1000000)
+            for field in Fields:
+                print(field.data_type)
+                dt = DataType.objects.filter(name__icontains = field.data_type)
+
+                for a in dt:
+                    dto = qs.filter(data_type = a.id)
+                    wanted_id = dto | wanted_id
+            print(wanted_id)
+            qs = wanted_id
+            print(qs)
+            #fields filtered
+
+            ## community filter
+            community = community.filter(name__icontains=community_query)
+        else:
+            Warning("There is no matching object.")
+
+
+    ## JSONFILTER! filter in jsonField field in DataTypeObject which has the matching TITLE
+    elif is_valid_queryparam(title_contains_query):
+        if contains == 'on':
+            #to be able to create empty qs ? find a better way!
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                #print(obj)
+                for a in obj.fields['fields']:
+                    #print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            #print("its title")
+                            #print(a['value'])
+                            if title_contains_query in a['value']:
+
+                                dto = DataTypeObject.objects.filter(id=obj.id)
+                                wanted_id = dto | wanted_id
+                                print("wanted")
+                                print(wanted_id)
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+        elif startswith == 'on':
+            # to be able to create empty qs ? find a better way!
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                # print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            s = len(title_contains_query)
+                            o = len(a['value'])
+                            if o >= s:
+                                if title_contains_query in a['value'][:s]:
+                                    dto = DataTypeObject.objects.filter(id=obj.id)
+                                    wanted_id = dto | wanted_id
+                                    print("wanted")
+                                    print(wanted_id)
+                            else:
+                                message = "Try with a shorter text"
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+
+        elif exactmatch == 'on':
+            wanted_id = qs.filter(id=1000000)
+            print("title search")
+            qs = qs.filter(fields__icontains=title_contains_query)
+            for obj in qs:
+                # print(obj)
+                for a in obj.fields['fields']:
+                    # print( a)
+
+                    if 'name' in a.keys():
+                        if a['name'] == 'title':
+                            s = len(title_contains_query)
+                            o = len(a['value'])
+                            if o >= s:
+                                if title_contains_query == a['value']:
+                                    dto = DataTypeObject.objects.filter(id=obj.id)
+                                    wanted_id = dto | wanted_id
+                                    print("wanted")
+                                    print(wanted_id)
+                            else:
+                                message = "Try with a shorter text"
+                    else:
+                        wanted_id = qs.filter(id=1000000)
+                        Warning("There is no matching object.")
+            qs = wanted_id
+            print(qs)
+
+
+        #else:
+        #    print(q)
+
+
+
+    #elif is_valid_queryparam(title_contains_query):
+        #post = post.filter(title__icontains=title_contains_query)
+
+
+    elif is_valid_queryparam(community_query):
+        if community_query != "":
+            wanted_id = qs.filter(id=1000000)
+            community = community.filter(name__icontains=community_query)
+
+            for com in community:
+                qs = DataTypeObject.objects.filter(community=com)
+                wanted_id = qs | wanted_id
+            qs = wanted_id
+        else:
+            message = "There are no results in communities that includes your search query."
+            print(message)
+
+    #TODO: Update tag search
+    #collect all objects that contains search query in their texts
+    elif is_valid_queryparam(id_exact_query):
+        qs = qs.filter(fields__icontains=id_exact_query)
+        wanted_id = qs.filter(id = 1000000)
+
+        for p in qs:
+            if 'fields' in p.fields.keys():
+                print(p.fields['fields'])
+                #print(p.fields.keys())
+                for obj in p.fields['fields']:
+                    if 'tagname' in obj:
+                        print("tagname")
+                        print(obj['tagname'])
+                        if id_exact_query in obj['tagname']:
+                             qs = DataTypeObject.objects.filter(id = p.id)
+                             wanted_id = qs | wanted_id
+        qs = wanted_id
+
+
+
+    elif is_valid_queryparam(Qcode_exact):
+        qs = qs.filter(fields__icontains=Qcode_exact)
+        wanted_id = qs.filter(id=1000000)
+        for p in qs:
+            if 'fields' in p.fields.keys():
+                print(p.fields['fields'])
+                # print(p.fields.keys())
+                for obj in p.fields['fields']:
+                    if 'Qvalue' in obj:
+                        print("Qvalue")
+                        print(obj['Qvalue'])
+                        if Qcode_exact == obj['Qvalue']:
+                            qs = DataTypeObject.objects.filter(id=p.id)
+                            wanted_id = qs | wanted_id
+                qs = wanted_id
+
+            else:
+                message = "There is no tag."
+
+    elif is_valid_queryparam(field_query):
+        qs = Field.objects.filter(name__icontains=field_query)
+
+
+
+    return render(request, 'communities/asearch.html', {'datatypeobjects': qs , 'community':community, 'posts': post })
 
 
 ##########
 
-
+@login_required
 def post_update(request):
     form = 'Posts Update'
     return HttpResponse(form)
 
+@login_required
 def post_delete(request):
     form = 'Posts Delete'
     return HttpResponse(form)
@@ -232,11 +677,12 @@ def post_delete(request):
 
 
 
-
+@login_required
 def post_detail(request, pk):
     post = get_object_or_404(Post, pk=pk)
     return render(request, 'communities/post_detail.html', {'post': post})
 
+@login_required
 def post_list(request):
     posts = get_object_or_404(Post, pk=pk)
     return render(request, 'communities/post_list.html', {'posts': posts})

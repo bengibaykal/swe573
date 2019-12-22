@@ -108,5 +108,6 @@ class DataTypeObject(models.Model):
 
     # def __str__(self):
     #         return self.title
-
+    def __int__(self):
+        return self.id
 
