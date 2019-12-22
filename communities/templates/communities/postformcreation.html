@@ -1,0 +1,15 @@
+<div class="row">
+  <div class="col-sm-12">
+    <div class="page-header">
+      <h2>Choose Recipe</h2>
+      <form action="{% url 'demo:nondynamic' %}" class="form-hotizontal" method="POST">
+        {% csrf_token %}
+
+
+
+        <div class="form-group row">
+          <div class="col-sm-6">
+            <label>{{ name }}</label>
+
+          </div>
+        </div>
