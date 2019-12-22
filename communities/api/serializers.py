@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from communities.models import Post2, Post, Community
+from communities.models import Post2, Post, Community, Field
 
 class Post2Serializer(serializers.ModelSerializer):
     class Meta:
@@ -46,5 +46,15 @@ class CommunitySerializer(serializers.ModelSerializer):
         fields = [
             'name',
             'summary',
+        ]
+class FieldSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Field
+        fields = [
+            'name',
+            'field_type',
+            'required',
+            'community',
+            'data_type'
         ]
 

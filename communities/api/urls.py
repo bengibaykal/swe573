@@ -1,6 +1,6 @@
 from django.urls import path
 from django.urls import include
-from communities.api.views import CommunityListAPIView, FormCreate, PostListAPIView, PostDetailAPIView, PostDeleteAPIView, PostUpdateAPIView, PostCreateAPIView, Post2FormDetail
+from communities.api.views import FieldAPIView ,CommunityListAPIView, FormCreate, PostListAPIView, PostDetailAPIView, PostDeleteAPIView, PostUpdateAPIView, PostCreateAPIView, Post2FormDetail
 
 
 urlpatterns = [
@@ -14,5 +14,6 @@ urlpatterns = [
     path('community/', CommunityListAPIView.as_view(), name='community'),
 
     path('form/', FormCreate.as_view(), name='FormCreate'),
+    path('field/<id>', FieldAPIView.as_view(), name='Field'),
 
 ]

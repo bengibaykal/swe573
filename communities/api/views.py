@@ -1,8 +1,8 @@
 from rest_framework.generics import ListAPIView, RetrieveAPIView, DestroyAPIView, RetrieveUpdateAPIView, CreateAPIView
 
 
-from communities.models import Post2, Community
-from communities.api.serializers import Post2Serializer, Post2UpdateCreateSerializer, CommunitySerializer
+from communities.models import Post2, Community, Field
+from communities.api.serializers import Post2Serializer, Post2UpdateCreateSerializer, CommunitySerializer, FieldSerializer
 from rest_framework.permissions import (IsAuthenticated, IsAdminUser)
 #custom permission isowner
 from communities.api.permissions import IsOwner
@@ -93,6 +93,14 @@ class CommunityListAPIView(ListAPIView):
     filter_backends = [ SearchFilter, OrderingFilter ]
     search_fields = ['name', 'summary']
     lookup_field = 'slug'
+
+
+class FieldAPIView(ListAPIView):
+    queryset = Field.objects.all()
+    serializer_class = FieldSerializer
+    filter_backends = [SearchFilter, OrderingFilter]
+    search_fields = ['community']
+    lookup_field = 'id'
 
 
 
