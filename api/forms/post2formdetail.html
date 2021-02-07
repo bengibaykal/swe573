@@ -1,0 +1,16 @@
+{% load rest_framework %}
+
+<html><body>
+
+<h1>Post </h1>
+{% render_field serializer.title style=style %}
+
+{% render_field serializer.code style=style %}
+
+<form action="{% url 'profile-detail' pk=post2.slug %}" method = POST>
+    {% csrf_token %}
+    {% render_form serializer %}
+    <input type="submit" value="Save">
+</form>
+
+</body></html>

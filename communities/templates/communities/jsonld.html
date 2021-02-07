@@ -1,0 +1,731 @@
+
+<!DOCTYPE html>
+<html lang="en-US" prefix="og: http://ogp.me/ns# fb: http://ogp.me/ns/fb# article: http://ogp.me/ns/article#" class="no-js">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width">
+<link rel="profile" href="https://gmpg.org/xfn/11">
+<link rel="pingback" href="https://jsonld.com/xmlrpc.php">
+<!--[if lt IE 9]>
+	<script src="https://jsonld.com/wp-content/themes/twentyfifteen/js/html5.js"></script>
+	<![endif]-->
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript">(function(html){html.className = html.className.replace(/\bno-js\b/,'js')})(document.documentElement);</script>
+<title>JSON-LD Generator | JSON-LD Schema Generator Tool</title>
+
+<meta name="description" content="We&#039;ve redeveloped our JSON-LD generator tool from the ground up and currently have 3 different types which generates valid JSON-LD markup." />
+<meta property="og:type" content="article" />
+<meta property="article:published_time" content="2016-07-01" />
+<meta property="article:modified_time" content="2019-05-06" />
+<meta property="og:title" content="JSON-LD Generator | JSON-LD Schema Generator Tool" />
+<meta property="og:description" content="We&#039;ve redeveloped our JSON-LD generator tool from the ground up and currently have 3 different types which generates valid JSON-LD markup." />
+<meta property="og:url" content="https://jsonld.com/json-ld-generator/" />
+<meta property="og:image" content="JSON-LD Generator | JSON-LD Schema Generator Tool" />
+<meta property="og:site_name" content="Steal Our JSON-LD" />
+<meta name="twitter:card" content="summary_large_image" />
+<meta name="twitter:site" content="@jsonld" />
+<meta name="twitter:site:id" content="1052459731" />
+<meta name="twitter:creator" content="@pmkoom" />
+<meta name="twitter:creator:id" content="374393689" />
+<meta name="twitter:title" content="JSON-LD Generator | JSON-LD Schema Generator Tool" />
+<meta name="twitter:description" content="We&#039;ve redeveloped our JSON-LD generator tool from the ground up and currently have 3 different types which generates valid JSON-LD markup." />
+<meta name="twitter:image" content="https://jsonld.com/wp-content/uploads/2019/05/jsonld-generator.png" />
+
+<link rel='dns-prefetch' href='//fonts.googleapis.com' />
+<link rel='dns-prefetch' href='//s.w.org' />
+<link href='https://fonts.gstatic.com' crossorigin rel='preconnect' />
+<link rel="alternate" type="application/rss+xml" title="Steal Our JSON-LD &raquo; Feed" href="https://jsonld.com/feed/" />
+<link rel="alternate" type="application/rss+xml" title="Steal Our JSON-LD &raquo; Comments Feed" href="https://jsonld.com/comments/feed/" />
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript">
+			window._wpemojiSettings = {"baseUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/72x72\/","ext":".png","svgUrl":"https:\/\/s.w.org\/images\/core\/emoji\/12.0.0-1\/svg\/","svgExt":".svg","source":{"concatemoji":"https:\/\/jsonld.com\/wp-includes\/js\/wp-emoji-release.min.js?ver=5.2.4"}};
+			!function(a,b,c){function d(a,b){var c=String.fromCharCode;l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,a),0,0);var d=k.toDataURL();l.clearRect(0,0,k.width,k.height),l.fillText(c.apply(this,b),0,0);var e=k.toDataURL();return d===e}function e(a){var b;if(!l||!l.fillText)return!1;switch(l.textBaseline="top",l.font="600 32px Arial",a){case"flag":return!(b=d([55356,56826,55356,56819],[55356,56826,8203,55356,56819]))&&(b=d([55356,57332,56128,56423,56128,56418,56128,56421,56128,56430,56128,56423,56128,56447],[55356,57332,8203,56128,56423,8203,56128,56418,8203,56128,56421,8203,56128,56430,8203,56128,56423,8203,56128,56447]),!b);case"emoji":return b=d([55357,56424,55356,57342,8205,55358,56605,8205,55357,56424,55356,57340],[55357,56424,55356,57342,8203,55358,56605,8203,55357,56424,55356,57340]),!b}return!1}function f(a){var c=b.createElement("script");c.src=a,c.defer=c.type="text/javascript",b.getElementsByTagName("head")[0].appendChild(c)}var g,h,i,j,k=b.createElement("canvas"),l=k.getContext&&k.getContext("2d");for(j=Array("flag","emoji"),c.supports={everything:!0,everythingExceptFlag:!0},i=0;i<j.length;i++)c.supports[j[i]]=e(j[i]),c.supports.everything=c.supports.everything&&c.supports[j[i]],"flag"!==j[i]&&(c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&c.supports[j[i]]);c.supports.everythingExceptFlag=c.supports.everythingExceptFlag&&!c.supports.flag,c.DOMReady=!1,c.readyCallback=function(){c.DOMReady=!0},c.supports.everything||(h=function(){c.readyCallback()},b.addEventListener?(b.addEventListener("DOMContentLoaded",h,!1),a.addEventListener("load",h,!1)):(a.attachEvent("onload",h),b.attachEvent("onreadystatechange",function(){"complete"===b.readyState&&c.readyCallback()})),g=c.source||{},g.concatemoji?f(g.concatemoji):g.wpemoji&&g.twemoji&&(f(g.twemoji),f(g.wpemoji)))}(window,document,window._wpemojiSettings);
+		</script>
+<style type="text/css">
+img.wp-smiley,
+img.emoji {
+	display: inline !important;
+	border: none !important;
+	box-shadow: none !important;
+	height: 1em !important;
+	width: 1em !important;
+	margin: 0 .07em !important;
+	vertical-align: -0.1em !important;
+	background: none !important;
+	padding: 0 !important;
+}
+</style>
+<link rel='stylesheet' id='wp-block-library-css' href='https://jsonld.com/wp-includes/css/dist/block-library/style.min.css?ver=5.2.4' type='text/css' media='all' />
+<link rel='stylesheet' id='wp-block-library-theme-css' href='https://jsonld.com/wp-includes/css/dist/block-library/theme.min.css?ver=5.2.4' type='text/css' media='all' />
+<link rel='stylesheet' id='su-plugin-seo.front-css' href='https://jsonld.com/wp-content/plugins/seo-ultimate-plus/plugin/seo.front.css?ver=2.0.7' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfifteen-style-css' href='https://jsonld.com/wp-content/themes/twentyfifteen/style.css?ver=5.2.4' type='text/css' media='all' />
+<link rel='stylesheet' id='child-style-css' href='https://jsonld.com/wp-content/themes/twentyfifteen-child/style.css?ver=1.0' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfifteen-fonts-css' href='https://fonts.googleapis.com/css?family=Noto+Sans%3A400italic%2C700italic%2C400%2C700%7CNoto+Serif%3A400italic%2C700italic%2C400%2C700%7CInconsolata%3A400%2C700&#038;subset=latin%2Clatin-ext' type='text/css' media='all' />
+<link rel='stylesheet' id='genericons-css' href='https://jsonld.com/wp-content/themes/twentyfifteen/genericons/genericons.css?ver=3.2' type='text/css' media='all' />
+<link rel='stylesheet' id='twentyfifteen-block-style-css' href='https://jsonld.com/wp-content/themes/twentyfifteen/css/blocks.css?ver=20181230' type='text/css' media='all' />
+<!--[if lt IE 9]>
+<link rel='stylesheet' id='twentyfifteen-ie-css'  href='https://jsonld.com/wp-content/themes/twentyfifteen/css/ie.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+<!--[if lt IE 8]>
+<link rel='stylesheet' id='twentyfifteen-ie7-css'  href='https://jsonld.com/wp-content/themes/twentyfifteen/css/ie7.css?ver=20141010' type='text/css' media='all' />
+<![endif]-->
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-includes/js/jquery/jquery.js?ver=1.12.4-wp'></script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-includes/js/jquery/jquery-migrate.min.js?ver=1.4.1'></script>
+<link rel='https://api.w.org/' href='https://jsonld.com/wp-json/' />
+<link rel="EditURI" type="application/rsd+xml" title="RSD" href="https://jsonld.com/xmlrpc.php?rsd" />
+<link rel="wlwmanifest" type="application/wlwmanifest+xml" href="https://jsonld.com/wp-includes/wlwmanifest.xml" />
+<meta name="generator" content="WordPress 5.2.4" />
+<link rel="canonical" href="https://jsonld.com/json-ld-generator/" />
+<link rel='shortlink' href='https://jsonld.com/?p=327' />
+<link rel="alternate" type="application/json+oembed" href="https://jsonld.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fjsonld.com%2Fjson-ld-generator%2F" />
+<link rel="alternate" type="text/xml+oembed" href="https://jsonld.com/wp-json/oembed/1.0/embed?url=https%3A%2F%2Fjsonld.com%2Fjson-ld-generator%2F&#038;format=xml" />
+</head>
+<body class="page-template page-template-generator page-template-generator-php page page-id-327 wp-embed-responsive">
+<div id="page" class="hfeed site">
+<a class="skip-link screen-reader-text" href="#content">Skip to content</a>
+<div id="sidebar" class="sidebar">
+<header id="masthead" class="site-header" role="banner">
+<div class="site-branding">
+<p class="site-title"><a href="https://jsonld.com/" rel="home">Steal Our JSON-LD</a></p>
+<p class="site-description">Structured Data. Made Simple.</p>
+<button class="secondary-toggle">Menu and widgets</button>
+</div>
+</header>
+<div id="secondary" class="secondary">
+<nav id="site-navigation" class="main-navigation" role="navigation">
+<div class="menu-navigation-container"><ul id="menu-navigation" class="nav-menu"><li id="menu-item-46" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-home menu-item-46"><a href="https://jsonld.com/">Home</a></li>
+<li id="menu-item-335" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-335"><a href="https://jsonld.com/about-us/">About</a></li>
+<li id="menu-item-61" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-61"><a href="https://jsonld.com/why-json-ld/">Why JSON-LD?</a></li>
+<li id="menu-item-45" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-45"><a href="https://jsonld.com/blog/">Blog</a></li>
+<li id="menu-item-433" class="menu-item menu-item-type-post_type menu-item-object-page current-menu-item page_item page-item-327 current_page_item menu-item-433"><a href="https://jsonld.com/json-ld-generator/" aria-current="page">JSON-LD Generator</a></li>
+<li id="menu-item-432" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-432"><a href="https://jsonld.com/contact-us/">Contact Us</a></li>
+</ul></div> </nav>
+<div id="widget-area" class="widget-area" role="complementary">
+<aside id="nav_menu-2" class="widget widget_nav_menu"><h2 class="widget-title">JSON-LD Examples</h2><div class="menu-main-container"><ul id="menu-main" class="menu"><li id="menu-item-27" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-27"><a href="https://jsonld.com/article/">Article</a></li>
+<li id="menu-item-56" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-56"><a href="https://jsonld.com/blog-post/">Blog Post</a></li>
+<li id="menu-item-54" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-54"><a href="https://jsonld.com/book/">Book</a></li>
+<li id="menu-item-345" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-345"><a href="https://jsonld.com/breadcrumb/">Breadcrumb</a></li>
+<li id="menu-item-366" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-366"><a href="https://jsonld.com/json-ld-course/">Course</a></li>
+<li id="menu-item-175" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-175"><a href="https://jsonld.com/email-message/">Email Message</a></li>
+<li id="menu-item-95" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-has-children menu-item-95"><a href="https://jsonld.com/event/">Event</a>
+<ul class="sub-menu">
+<li id="menu-item-247" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-247"><a href="https://jsonld.com/event/venue/">Venue</a></li>
+<li id="menu-item-249" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-249"><a href="https://jsonld.com/event/concert/">Concert</a></li>
+<li id="menu-item-248" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-248"><a href="https://jsonld.com/event/concert-multiple-performers/">Concert: Multiple Performers</a></li>
+</ul>
+</li>
+<li id="menu-item-81" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-81"><a href="https://jsonld.com/job-posting/">Job Posting</a></li>
+<li id="menu-item-17" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-17"><a href="https://jsonld.com/local-business/">Local Business</a></li>
+<li id="menu-item-104" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-104"><a href="https://jsonld.com/news-article/">News Article</a></li>
+<li id="menu-item-14" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-14"><a href="https://jsonld.com/organization/">Organization</a></li>
+<li id="menu-item-78" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-78"><a href="https://jsonld.com/person/">Person</a></li>
+<li id="menu-item-92" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-92"><a href="https://jsonld.com/product/">Product</a></li>
+<li id="menu-item-446" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-446"><a href="https://jsonld.com/question-and-answer/">Question and Answer</a></li>
+<li id="menu-item-22" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-22"><a href="https://jsonld.com/recipe/">Recipe</a></li>
+<li id="menu-item-461" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-461"><a href="https://jsonld.com/restaurant-menu-json-ld-sample/">Restaurant Menu</a></li>
+<li id="menu-item-322" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-322"><a href="https://jsonld.com/review/">Review</a></li>
+<li id="menu-item-84" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-84"><a href="https://jsonld.com/social-network-profiles/">Social Network Profiles</a></li>
+<li id="menu-item-420" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-420"><a href="https://jsonld.com/speakable-json-ld/">Speakable</a></li>
+<li id="menu-item-358" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-358"><a href="https://jsonld.com/table/">Table</a></li>
+<li id="menu-item-267" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-267"><a href="https://jsonld.com/video/">Video</a></li>
+<li id="menu-item-34" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-34"><a href="https://jsonld.com/web-page/">Web Page</a></li>
+<li id="menu-item-514" class="menu-item menu-item-type-post_type menu-item-object-page menu-item-514"><a href="https://jsonld.com/website/">Web Site</a></li>
+</ul></div></aside> </div>
+</div>
+</div>
+<div id="content" class="site-content">
+<div id="primary" class="content-area">
+<main id="main" class="site-main" role="main">
+<article id="post-327" class="post-327 page type-page status-publish has-post-thumbnail hentry">
+<div class="post-thumbnail">
+<img src="/wp-content/uploads/2019/05/jsonld-generator.png" class="attachment-post-thumbnail size-post-thumbnail wp-post-image" alt="jsonld-generator" srcset="/wp-content/uploads/2019/05/jsonld-generator.png 700w, /wp-content/uploads/2019/05/jsonld-generator-300x150.png 300w" sizes="(max-width: 700px) 100vw, 700px" width="700" height="350">
+</div>
+<header class="entry-header">
+<h1 class="entry-title">JSON-LD Generator</h1> </header>
+<div class="entry-content">
+<p>May 1, 2019 Update: Our JSON-LD Generator has been redeveloped from scratch and is now live in &#8220;beta&#8221; mode. We are still working out a few kinks, but should be rolling here any minute. </p>
+<p>The most important part is that it generates &#8220;Google validated&#8221; markup. Right now we have 3 types: person, local business and organization. We are going to add more types in the next few weeks. If you have any requests, let us know!</p>
+
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src="/wp-content/themes/twentyfifteen-child/jquery.mask.js"></script>
+<style type="text/css">
+	.row{width:100%; float:left; font-size: 13px!important}
+	.col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12{float:left; padding:10px;}
+	.col12 {width:100%;}.col11{width:91.66666667%;}.col10 {width: 83.33333333%;}.col9 {width: 75%;}.col8 {width: 66.66666667%;}.col7 {width: 58.33333333%;}.col6 {width: 50%;}.col5 {width: 41.66666667%;}.col4 {width: 33.33333333%;}.col3 {width: 25%;}.col2 {width: 16.66666667%;}.col1 {width: 8.33333333%;}
+	select, textarea, input[type=text], label{width: 100%; padding:4px; margin-bottom: 10px; font-size: 13px!important}
+	input[type=button]{padding:10px;}
+	#addSameAsUrl, #removeSameAsUrl{float: left;}
+	#localBusiness{width: 100%; float: left; margin-top: 20px;}
+	label{float: left; padding: 2px!important}
+	.time{width: 100%; float: left;}
+	.pb0{padding-bottom: 0!important}
+	@media only screen and (min-width: 0px) and (max-width: 768px){
+		.col1, .col2, .col3, .col4, .col5, .col6, .col7, .col8, .col9, .col10, .col11, .col12{width: 100%}
+	}
+</style>
+<div class="row">
+<div class="col4">
+<select name="options">
+<option value="Local Business">Local Business</option>
+<option value="Organization">Organization</option>
+<option value="Person">Person</option>
+</select>
+<form name="fields" id="fields">
+<div id="localBusinessOrganization">
+Type:
+<select id="oType" style="display: none;">
+<option value="">- Select -</option>
+<option value="Organization">Organization</option>
+<option value="Corporation">Corporation</option>
+<option value="Educational Organization">Educational Organization</option>
+<option value="Government Organization">Government Organization</option>
+<option value="Local Business">Local Business</option>
+<option value="NGO">NGO</option>
+<option value="Performing Group">Performing Group</option>
+<option value="SportsTeam">SportsTeam</option>
+</select>
+<select id="bType">
+<option value="">- Select -</option>
+<option>Animal Shelter</option>
+<optgroup label="Automotive" id="automotive">
+Automotive <option>Automotive Business</option>
+<option>Auto Body Shop</option>
+<option>Auto Dealer</option>
+<option>Auto Parts Store</option>
+<option>Auto Rental</option>
+<option>Auto Repair</option>
+<option>Auto Wash</option>
+<option>Gas Station</option>
+<option>Motorcycle Dealer</option>
+<option>Motorcycle Repair</option>
+</optgroup>
+<option>Child Care</option>
+<option>Dry Cleaning Or Laundry</option>
+<optgroup label="Emergency">
+<option>Emergency Service</option>
+<option>Fire Station</option>
+<option>Hospital</option>
+<option>Police Station</option>
+</optgroup>
+<option>Employment Agency</option>
+<optgroup label="Entertainment">
+<option>Entertainment Business</option>
+<option>Adult Entertainment</option>
+<option>Amusement Park</option>
+<option>Art Gallery</option>
+<option>Casino</option>
+<option>Comedy Club</option>
+<option>Movie Theater</option>
+<option>Night Club</option>
+</optgroup>
+<optgroup label="Financial">
+<option>Accounting Service</option>
+<option>Automated Teller</option>
+<option>Bank Or Credit Union</option>
+<option>Insurance Agency</option>
+</optgroup>
+<optgroup label="Food">
+<option>Food Establishment</option>
+<option>Bakery</option>
+<option>Bar Or Pub</option>
+<option>Brewery</option>
+<option>Cafe Or Coffee Shop</option>
+<option>Fast Food Restaurant</option>
+<option>Ice Cream Shop</option>
+<option>Restaurant</option>
+<option>Winery</option>
+</optgroup>
+<option>Government Office</option>
+<option>Post Office</option>
+<optgroup label="Health And Beauty">
+<option>Health And Beauty Business</option>
+<option>Beauty Salon</option>
+<option>Day Spa</option>
+<option>Hair Salon</option>
+<option>Health Club</option>
+<option>Nail Salon</option>
+<option>Tattoo Parlor</option>
+</optgroup>
+<optgroup label="Home And Construction">
+<option>Home And Construction Business</option>
+<option>Electrician</option>
+<option>General Contractor</option>
+<option>HVAC Business</option>
+<option>House Painter</option>
+<option>Locksmith</option>
+<option>Moving Company</option>
+<option>Plumber</option>
+<option>RoofingContractor</option>
+</optgroup>
+<option>Internet Cafe</option>
+<option>Library</option>
+<optgroup label="Lodging">
+<option>Lodging Business</option>
+<option>Bed And Breakfast</option>
+<option>Hostel</option>
+<option>Hotel</option>
+<option>Motel</option>
+</optgroup>
+<optgroup label="Medical/Dental">
+<option>Dentist</option>
+<option>Diagnostic Lab</option>
+<option>Hospital</option>
+<option>Medical Clinic</option>
+<option>Optician</option>
+<option>Pharmacy</option>
+<option>Physician</option>
+<option>Veterinary Care</option>
+</optgroup>
+<optgroup label="Professional Services">
+<option>Professional Service</option>
+<option>Accounting Service</option>
+<option>Attorney</option>
+<option>Dentist</option>
+<option>Electrician</option>
+<option>General Contractor</option>
+<option>House Painter</option>
+<option>Locksmith</option>
+<option>Notary</option>
+<option>Plumber</option>
+<option>Roofing Contractor</option>
+</optgroup>
+<option>Radio Station</option>
+<option>Real Estate Agent</option>
+<option>Recycling Center</option>
+<option>Self Storage</option>
+<option>Shopping Center</option>
+<optgroup label="Sports Activities">
+<option>Sports Activity Location</option>
+<option>Bowling Alley</option>
+<option>Exercise Gym</option>
+<option>Golf Course</option>
+ <option>Health Club</option>
+<option>Public Swimming Pool</option>
+<option>Ski Resort</option>
+<option>Sports Club</option>
+<option>Stadium Or Arena</option>
+<option>Tennis Complex</option>
+</optgroup>
+<optgroup label="Stores">
+<option>Store</option>
+<option>Auto Parts Store</option>
+<option>Bike Store</option>
+<option>Book Store</option>
+<option>Clothing Store</option>
+<option>Computer Store</option>
+<option>Convenience Store</option>
+<option>Department Store</option>
+<option>Electronics Store</option>
+<option>Florist</option>
+<option>Furniture Store</option>
+<option>Garden Store</option>
+<option>Grocery Store</option>
+<option>Hardware Store</option>
+<option>Hobby Shop</option>
+<option>Home Goods Store</option>
+<option>Jewelry Store</option>
+<option>Liquor Store</option>
+<option>Mens Clothing Store</option>
+<option>Mobile Phone Store</option>
+<option>Movie Rental Store</option>
+<option>Music Store</option>
+<option>Office Equipment Store</option>
+<option>Outlet Store</option>
+<option>Pawn Shop</option>
+<option>Pet Store</option>
+<option>Shoe Store</option>
+<option>Sporting Goods Store</option>
+<option>Tire Shop</option>
+<option>Toy Store</option>
+<option>Wholesale Store</option>
+</optgroup>
+<option>Television Station</option>
+<option>Tourist Information Center</option>
+<option>Travel Agency</option>
+</select>
+Name:
+<input type="text" id="name">
+Logo (use a URL to your logo image):
+<input type="text" id="logo">
+Description:
+<textarea rows="5" id="description"></textarea>
+Address:
+<input type="text" id="streetAddress">
+<div id="poBoxDiv" style="display: none;">PO Box:
+<input type="text" id="postOfficeBoxNumber"></div>
+City:
+<input type="text" id="addressLocality">
+State/Region:
+<input type="text" id="addressRegion">
+Zip/Postal Code:
+<input type="text" id="postalCode">
+Country:
+<input type="text" id="addressCountry">
+Latitude:
+<input type="text" id="latitude">
+Longitude:
+<input type="text" id="longitude">
+Include a Google Map URL:
+<input type="text" id="hasMap">
+Select Business Hours:<br>
+<label><input type="checkbox" name="day" value="Mo"> Monday</label>
+<label><input type="checkbox" name="day" value="Tu"> Tuesday</label>
+<label><input type="checkbox" name="day" value="We"> Wednesday</label>
+<label><input type="checkbox" name="day" value="Th"> Thursday</label>
+<label><input type="checkbox" name="day" value="Fr"> Friday</label>
+<label><input type="checkbox" name="day" value="Sa"> Saturday</label>
+<label><input type="checkbox" name="day" value="Su"> Sunday</label>
+
+</div>
+<div id="person" style="display: none;">
+Name:
+<input type="text" id="nameP">
+Job Title:
+<input type="text" id="jobTitle">
+Height:
+<input type="text" id="height" placeholder="72 inches">
+Gender:
+<select id="gender">
+<option value="">- Choose -</option>
+<option value="male">male</option>
+<option value="female">female</option>
+</select>
+
+Address:
+<input type="text" id="streetAddressP">
+PO Box:
+<input type="text" id="postOfficeBoxNumberP">
+City:
+<input type="text" id="addressLocalityP">
+State/Region:
+<input type="text" id="addressRegionP">
+Zip/Postal Code:
+<input type="text" id="postalCodeP">
+Country:
+<input type="text" id="addressCountryP">
+Email:
+<input type="text" id="email">
+
+Birth Date (international format YYYY-MM-DD):
+<input type="text" id="birthDate" placeholder="YYYY-MM-DD">
+Alumni Of:
+<input type="text" id="alumniOf">
+Birth Place:
+<input type="text" id="birthPlace">
+Member of:
+<input type="text" id="memberOf" placeholder="Republican Party">
+Nationality:
+<input type="text" id="nationality" placeholder="African American">
+<div style="float: left; width: 100%; margin-bottom: 10px">
+Colleague:
+<div id="colleagueList"></div>
+<input type="button" value="Add Colleague" id="addColleague" style="float: left;"><input type="button" value="Remove" id="removeColleague" style="display: none;">
+</div>
+</div>
+
+<div class="priceRange">
+Price range:
+<select id="priceRange">
+<option value="" selected="selected">- Choose -</option>
+<option value="$">$ = Inexpensive, usually $10 and under</option>
+<option value="$$">$$ = Moderately expensive, usually between $10-$25</option>
+<option value="$$$">$$$ = Expensive, usually between $25-$45</option>
+<option value="$$$$">$$$$ = Very Expensive, usually $50 and up</option>
+</select>
+</div>
+<div class="image">
+Image (use a URL to your image):
+<input type="text" id="image">
+</div>
+<div class="phoneNumber">
+Telephone:
+<input type="text" id="telephone" placeholder="+1 (000) 000-0000">
+</div>
+<div class="url">
+URL:
+<input type="text" id="url" placeholder="http://">
+<div class="sameAsURLDiv" style="display: none">Same As URL:</div>
+<input type="button" value="Add Same As URL" id="addSameAsUrl"><input type="button" value="Remove" id="removeSameAsUrl" style="display: none;">
+</div>
+</form>
+</div>
+<div class="col8">
+<textarea readonly="readonly" rows="50" id="result"></textarea>
+</div>
+</div>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript">
+		function writeResult(){
+			jQuery("#result").val("");
+		  		buildTA = "<script type='application/ld+json'>\n{\n  \"@context\": \"http://www.schema.org\",";
+
+		  		if(jQuery("select[name='options']").val() == "Person"){
+			  		buildTA += "\n  \"@type\": \"person\",";
+			  	}
+
+			  	if(jQuery("#bType").val() != ""){
+			  		buildTA += "\n  \"@type\": \""+jQuery("#bType").val().replace(/ /g,"")+"\",";
+			  	}
+
+			  	if(jQuery("#oType").val() != ""){
+			  		buildTA += "\n  \"@type\": \""+jQuery("#oType").val().replace(/ /g,"")+"\",";
+			  	}
+
+			  	if(jQuery("#name").val() != "" || jQuery("#nameP").val() != ""){
+			  		buildTA += "\n  \"name\": \""+jQuery("#name").val()+jQuery("#nameP").val()+"\",";
+			  	}
+
+			  	if(jQuery("#jobTitle").val() != ""){
+			  		buildTA += "\n  \"jobTitle\": \""+jQuery("#jobTitle").val()+"\",";
+			  	}
+
+			  	if(jQuery("#height").val() != ""){
+			  		buildTA += "\n  \"height\": \""+jQuery("#height").val()+"\",";
+			  	}
+
+				if(jQuery("#gender").val() != ""){
+			  		buildTA += "\n  \"gender\": \""+jQuery("#gender").val()+"\",";
+			  	}
+
+			  	if(jQuery("#url").val() != ""){
+			  		buildTA += "\n  \"url\": \""+jQuery("#url").val()+"\",";
+			  	}
+			  	//same URL fields
+			  	if(jQuery(".sameAs").length > 0){
+			  		buildTA += "\n  \"sameAs\": [";
+			  		sameAsFields = "";
+			  		jQuery(".sameAs").each(function(){
+			      		sameAsFields += "\n     \""+jQuery(this).val()+"\",";
+					});
+					buildTA += sameAsFields.substring(0, sameAsFields.length-1)+"\n  ],";
+				}//end same URL fields
+
+			  	if(jQuery("#logo").val() != ""){
+			  		buildTA += "\n  \"logo\": \""+jQuery("#logo").val()+"\",";
+			  	}
+
+			  	if(jQuery("#priceRange").val() != ""){
+			  		buildTA += "\n  \"priceRange\": \""+jQuery("#priceRange").val()+"\",";
+			  	}
+
+
+			  	if(jQuery("#image").val() != ""){
+			  		buildTA += "\n  \"image\": \""+jQuery("#image").val()+"\",";
+			  	}
+
+			  	if(jQuery("#description").val() != ""){
+			  		buildTA += "\n  \"description\": \""+jQuery("#description").val().replace(/(\r\n|\n|\r)/gm,"\\n")+"\",";
+			  	}
+			  	//address
+			  	if(jQuery("#streetAddress").val() != "" || jQuery("#addressLocality").val() != "" || jQuery("#addressRegion").val() != "" || jQuery("#postalCode").val() != "" || jQuery("#addressCountry").val() != "" || jQuery("#postOfficeBoxNumber").val() != "" || jQuery("#streetAddressP").val() != "" || jQuery("#addressLocalityP").val() != "" || jQuery("#addressRegionP").val() != "" || jQuery("#postalCodeP").val() != "" || jQuery("#addressCountryP").val() != "" || jQuery("#postOfficeBoxNumberP").val() != ""){
+
+
+			  		buildTA += "\n  \"address\": {\n     \"@type\": \"PostalAddress\",";
+			  		addressFields = "";
+			  		if(jQuery("#streetAddress").val() != "" || jQuery("#streetAddressP").val() != ""){
+				  		addressFields += "\n     \"streetAddress\": \""+jQuery("#streetAddress").val()+jQuery("#streetAddressP").val()+"\",";
+				  	}
+				  	if(jQuery("#postOfficeBoxNumber").val() != "" || jQuery("#postOfficeBoxNumberP").val() != ""){
+				  		addressFields += "\n     \"postOfficeBoxNumber\": \""+jQuery("#postOfficeBoxNumber").val()+jQuery("#postOfficeBoxNumberP").val()+"\",";
+				  	}
+				  	if(jQuery("#addressLocality").val() != "" || jQuery("#addressLocalityP").val() != ""){
+				  		addressFields += "\n     \"addressLocality\": \""+jQuery("#addressLocality").val()+jQuery("#addressLocalityP").val()+"\",";
+				  	}
+				  	if(jQuery("#addressRegion").val() != "" || jQuery("#addressRegionP").val() != ""){
+				  		addressFields += "\n     \"addressRegion\": \""+jQuery("#addressRegion").val()+jQuery("#addressRegionP").val()+"\",";
+				  	}
+				  	if(jQuery("#postalCode").val() != "" || jQuery("#postalCodeP").val() != ""){
+				  		addressFields += "\n     \"postalCode\": \""+jQuery("#postalCode").val()+jQuery("#postalCodeP").val()+"\",";
+				  	}
+				  	if(jQuery("#addressCountry").val() != "" || jQuery("#addressCountryP").val() != ""){
+				  		addressFields += "\n     \"addressCountry\": \""+jQuery("#addressCountry").val()+jQuery("#addressCountryP").val()+"\",";
+				  	}
+				  	buildTA += addressFields.substring(0, addressFields.length-1)+"\n  },";
+				}//end address
+
+				if(jQuery("#email").val() != ""){
+			  		buildTA += "\n  \"email\": \""+jQuery("#email").val()+"\",";
+			  	}
+
+			  	/*if(jQuery("#telephoneP").val() != ""){
+			  		buildTA += "\n  \"telephone\": \""+jQuery("#telephoneP").val()+"\",";
+			  	}*/
+
+			  	if(jQuery("#birthDate").val() != ""){
+			  		buildTA += "\n  \"birthDate\": \""+jQuery("#birthDate").val()+"\",";
+			  	}
+
+				//longitude, latitude
+			  	if(jQuery("#longitude").val() != "" || jQuery("#latitude").val() != ""){
+			  		buildTA += "\n  \"geo\": {\n     \"@type\": \"GeoCoordinates\",";
+			  		geoFields = "";
+				  	if(jQuery("#latitude").val() != ""){
+				  		geoFields += "\n     \"latitude\": \""+jQuery("#latitude").val()+"\",";
+				  	}
+				  	if(jQuery("#longitude").val() != ""){
+				  		geoFields += "\n     \"longitude\": \""+jQuery("#longitude").val()+"\",";
+				  	}
+				  	buildTA += geoFields.substring(0, geoFields.length-1)+"\n  },";
+				}//end longitude, latitude
+
+				if(jQuery("#hasMap").val() != ""){
+			  		buildTA += "\n  \"hasMap\": \""+jQuery("#hasMap").val()+"\",";
+			  	}
+
+			  	if(jQuery("#alumniOf").val() != ""){
+			  		buildTA += "\n  \"alumniOf\": \""+jQuery("#alumniOf").val()+"\",";
+			  	}
+
+			  	if(jQuery("#birthPlace").val() != ""){
+			  		buildTA += "\n  \"birthPlace\": \""+jQuery("#birthPlace").val()+"\",";
+			  	}
+
+			  	if(jQuery("#memberOf").val() != ""){
+			  		buildTA += "\n  \"memberOf\": \""+jQuery("#memberOf").val()+"\",";
+			  	}
+
+			  	if(jQuery("#nationality").val() != ""){
+			  		buildTA += "\n  \"nationality\": \""+jQuery("#nationality").val()+"\",";
+			  	}
+
+				//colleague fields
+			  	if(jQuery(".colleagueAs").length > 0){
+			  		buildTA += "\n  \"colleague\": [";
+			  		sameColleagueFields = "";
+			  		jQuery(".colleagueAs").each(function(){
+			      		sameColleagueFields += "\n     \""+jQuery(this).val()+"\",";
+					});
+					buildTA += sameColleagueFields.substring(0, sameColleagueFields.length-1)+"\n  ],";
+				}//end colleague
+
+				//days
+				if(jQuery("input[name='day']:checkbox:checked").length > 0){
+					buildTA += "\n   \"openingHours\": \"";
+					daysFields = "";
+					jQuery("input[name='day']").each(function(){
+						if(jQuery(this).is(':checked')){
+				      		daysFields += jQuery(this).val()+" "+jQuery(this).parent().find(".open").val()+"-"+jQuery(this).parent().find(".close").val()+" ";
+						}
+					});
+					buildTA += daysFields.substring(0, daysFields.length-1)+"\",";
+				}//end days
+
+
+			  	//contactType, telephone
+			  	if(jQuery("#contactType").val() != "" || jQuery("#telephone").val() != ""){
+			  		//buildTA += "\n  \"contactPoint\": {\n     \"@type\": \"ContactPoint\",";
+			  		phoneFields = "";
+				  	if(jQuery("#contactType").val() != ""){
+				  		//phoneFields += "\n     \"contactType\": \""+jQuery("#contactType").val()+"\",";
+				  	}
+				  	if(jQuery("#telephone").val() != ""){
+				  		phoneFields += "\n  \"telephone\": \""+jQuery("#telephone").val()+"\",";
+				  	}
+				  	//buildTA += phoneFields.substring(0, phoneFields.length-1)+"\n  },";
+				  	buildTA += phoneFields;
+				}//end contactType, telephone
+
+		  	buildTA = buildTA.substring(0, buildTA.length-1);
+		  	buildTA += "\n}\n<\/script>";
+		  	jQuery("#result").val(buildTA);
+		}
+
+
+		jQuery(function(){
+			jQuery('#birthDate').mask("0000-00-00", {clearIfNotMatch: true});
+			//all fields actions
+			jQuery(document).on({
+		    	 keyup: function(){ writeResult(); },
+		    	change: function(){ writeResult(); },
+		    	 click: function(){ writeResult(); }
+			}, "#bType, #name, #url, .sameAs, #logo, #image, #description, #streetAddress, #addressLocality, #addressRegion, #postalCode, #addressCountry, #latitude, #longitude, #hasMap, #contactType, #telephone, input[name='day'], .open, .close, #oType, #poBoxDiv, #nameP, #jobTitle, #urlP, #streetAddressP, #postOfficeBoxNumberP, #addressLocalityP, #addressRegionP, #postalCodeP, #addressCountryP, #email, #telephoneP, #birthDate, #alumniOf, #birthPlace, #height, #gender, #memberOf, #nationality, .colleagueAs, #priceRange");
+
+
+			jQuery("input[name='day']").on("click", function(){
+		      	if(jQuery(this).is(':checked')){
+		      		jQuery(this).after("<div class=\"time\"><div class=\"col6 pb0\">Open<select class=\"open\"><option value=\"01:00\">00:00</option><option value=\"01:00\">00:30</option><option value=\"01:00\">01:00</option><option value=\"01:30\">01:30</option><option value=\"02:00\">02:00</option><option value=\"02:30\">02:30</option><option value=\"03:00\">03:00</option><option value=\"03:30\">03:30</option><option value=\"04:00\">04:00</option><option value=\"04:30\">04:30</option><option value=\"05:00\">05:00</option><option value=\"05:30\">05:30</option><option value=\"06:00\">06:00</option><option value=\"06:30\">06:30</option><option value=\"07:00\">07:00</option><option value=\"07:30\">07:30</option><option value=\"08:00\">08:00</option><option value=\"08:30\">08:30</option><option value=\"09:00\">09:00</option><option value=\"09:30\">09:30</option><option value=\"10:00\">10:00</option><option value=\"10:30\">10:30</option><option value=\"11:00\">11:00</option><option value=\"11:30\">11:30</option><option value=\"12:00\">12:00</option><option value=\"12:30\">12:30</option><option value=\"13:00\">13:00</option><option value=\"13:30\">13:30</option><option value=\"14:00\">14:00</option><option value=\"14:30\">14:30</option><option value=\"15:00\">15:00</option><option value=\"15:30\">15:30</option><option value=\"16:00\">16:00</option><option value=\"16:30\">16:30</option><option value=\"17:00\">17:00</option><option value=\"17:30\">17:30</option><option value=\"18:00\">18:00</option><option value=\"18:30\">18:30</option><option value=\"19:00\">19:00</option><option value=\"19:30\">19:30</option><option value=\"20:00\">20:00</option><option value=\"20:30\">20:30</option><option value=\"21:00\">21:00</option><option value=\"21:30\">21:30</option><option value=\"22:00\">22:00</option><option value=\"22:30\">22:30</option><option value=\"23:00\">23:00</option><option value=\"23:30\">23:30</option></select></div><div class=\"col6 pb0\">Close<select class=\"close\"><option value=\"01:00\">00:00</option><option value=\"01:00\">00:30</option><option value=\"01:00\">01:00</option><option value=\"01:30\">01:30</option><option value=\"02:00\">02:00</option><option value=\"02:30\">02:30</option><option value=\"03:00\">03:00</option><option value=\"03:30\">03:30</option><option value=\"04:00\">04:00</option><option value=\"04:30\">04:30</option><option value=\"05:00\">05:00</option><option value=\"05:30\">05:30</option><option value=\"06:00\">06:00</option><option value=\"06:30\">06:30</option><option value=\"07:00\">07:00</option><option value=\"07:30\">07:30</option><option value=\"08:00\">08:00</option><option value=\"08:30\">08:30</option><option value=\"09:00\">09:00</option><option value=\"09:30\">09:30</option><option value=\"10:00\">10:00</option><option value=\"10:30\">10:30</option><option value=\"11:00\">11:00</option><option value=\"11:30\">11:30</option><option value=\"12:00\">12:00</option><option value=\"12:30\">12:30</option><option value=\"13:00\">13:00</option><option value=\"13:30\">13:30</option><option value=\"14:00\">14:00</option><option value=\"14:30\">14:30</option><option value=\"15:00\">15:00</option><option value=\"15:30\">15:30</option><option value=\"16:00\">16:00</option><option value=\"16:30\">16:30</option><option value=\"17:00\">17:00</option><option value=\"17:30\">17:30</option><option value=\"18:00\">18:00</option><option value=\"18:30\">18:30</option><option value=\"19:00\">19:00</option><option value=\"19:30\">19:30</option><option value=\"20:00\">20:00</option><option value=\"20:30\">20:30</option><option value=\"21:00\">21:00</option><option value=\"21:30\">21:30</option><option value=\"22:00\">22:00</option><option value=\"22:30\">22:30</option><option value=\"23:00\">23:00</option><option value=\"23:30\">23:30</option></select></div></div>");
+				}else{
+					jQuery(this).next(".time").remove();
+				}
+		    });
+
+			//main dropdown
+			jQuery("select[name='options']").on( "change", function(){
+		      	jQuery("#result").val("");
+		      	jQuery('#fields')[0].reset();
+		      	jQuery(".time, input[name='sameAs']").remove();
+		      	jQuery(".sameAsURLDiv, #removeSameAsUrl").hide();
+				jQuery("input[name='colleagueAs']").remove();
+				jQuery('#removeColleague').css('display','none');
+
+
+		      	if(jQuery(this).val() == "Local Business"){
+		      		jQuery("#localBusinessOrganization, #bType, .phoneNumber, .url, .image, .priceRange").show();
+		      		jQuery("#oType, #poBoxDiv, #person").hide();
+
+		      	}else if(jQuery(this).val() == "Organization"){
+		      		jQuery("#localBusinessOrganization, #oType, #poBoxDiv, .image, .url").show();
+		      		jQuery("#bType, #person, .phoneNumber, .priceRange").hide();
+
+		      	}else if(jQuery(this).val() == "Person"){
+		      		jQuery("#localBusinessOrganization, .priceRange").hide();
+		      		jQuery("#person, .person, .phoneNumber, .url, .image").show();
+		      	}
+		    });
+
+			//add and remove same as URL
+			jQuery('#addSameAsUrl').click(function(e){ //ADD SAME AS URL
+				jQuery('.sameAsURLDiv, #removeSameAsUrl').css('display','block');
+			    jQuery('.sameAsURLDiv').append("<input name=\"sameAs\" class=\"sameAs\" type=\"text\" placeholder=\"http://\">");
+			    jQuery("input[name='sameAs']").last().focus();
+			    writeResult();
+			});
+			jQuery('#removeSameAsUrl').click(function(e){ //REMOVE SAME AS URL
+				jQuery("input[name='sameAs']").last().remove();
+				if(jQuery("input[name='sameAs']").length == 0){
+					jQuery('.sameAsURLDiv, #removeSameAsUrl').css('display','none');
+				}
+				writeResult();
+			});//end add and remove same as URL
+
+			//colleague
+			jQuery('#addColleague').click(function(e){ //ADD SAME AS URL
+				jQuery('#removeColleague').css('display','block');
+			    jQuery('#colleagueList').append("<input name=\"colleagueAs\" class=\"colleagueAs\" type=\"text\" placeholder=\"http://\">");
+			    jQuery("input[name='colleagueAs']").last().focus();
+			    writeResult();
+			});
+			jQuery('#removeColleague').click(function(e){ //REMOVE SAME AS URL
+				jQuery("input[name='colleagueAs']").last().remove();
+				if(jQuery("input[name='colleagueAs']").length == 0){
+					jQuery('#removeColleague').css('display','none');
+				}
+				writeResult();
+			});//end colleague
+		})
+	</script>
+
+</div>
+</article>
+</main>
+</div>
+</div>
+<footer id="colophon" class="site-footer" role="contentinfo">
+<div class="site-info">
+<a href="https://wordpress.org/" class="imprint">
+Proudly powered by WordPress </a>
+</div>
+</footer>
+</div>
+<div id="su-footer-links" style="text-align: center;"></div><script type="1f598dbc0d6b7280ad123fe4-text/javascript">
+/* <![CDATA[ */
+var countVars = {"disqusShortname":"jsonld"};
+/* ]]> */
+</script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-content/plugins/disqus-comment-system/public/js/comment_count.js?ver=3.0.17'></script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-content/themes/twentyfifteen/js/skip-link-focus-fix.js?ver=20141010'></script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript">
+/* <![CDATA[ */
+var screenReaderText = {"expand":"<span class=\"screen-reader-text\">expand child menu<\/span>","collapse":"<span class=\"screen-reader-text\">collapse child menu<\/span>"};
+/* ]]> */
+</script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-content/themes/twentyfifteen/js/functions.js?ver=20150330'></script>
+<script type="1f598dbc0d6b7280ad123fe4-text/javascript" src='https://jsonld.com/wp-includes/js/wp-embed.min.js?ver=5.2.4'></script>
+<script src="https://ajax.cloudflare.com/cdn-cgi/scripts/7089c43e/cloudflare-static/rocket-loader.min.js" data-cf-settings="1f598dbc0d6b7280ad123fe4-|49" defer=""></script></body>
+</html>
